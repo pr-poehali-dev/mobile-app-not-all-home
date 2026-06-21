@@ -246,7 +246,7 @@ export default function Index() {
           {/* Картинка по центру */}
           <div className="flex-1 flex items-center justify-center py-4">
             <img
-              src="https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/3d2a4a8a-2c6d-4db7-90ef-d47da37b0145.jpg"
+              src="https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/1662741b-084a-407b-b57a-6709bfb9311c.png"
               alt="Настроения"
               className="w-full max-w-[300px] object-contain"
             />
