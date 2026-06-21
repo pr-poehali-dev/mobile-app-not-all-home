@@ -662,40 +662,16 @@ export default function Index() {
                 </button>
               </div>
 
-              {/* QR-код — SVG-имитация */}
+              {/* QR-код */}
               <div className="flex justify-center mb-5">
                 <div className="p-3 bg-white rounded-2xl border-2 border-slate-100 shadow-sm">
-                  <svg width="160" height="160" viewBox="0 0 160 160" fill="none">
-                    {/* Угловые маркеры */}
-                    <rect x="8" y="8" width="44" height="44" rx="6" fill="#1e293b"/>
-                    <rect x="14" y="14" width="32" height="32" rx="3" fill="white"/>
-                    <rect x="20" y="20" width="20" height="20" rx="2" fill="#1e293b"/>
-                    <rect x="108" y="8" width="44" height="44" rx="6" fill="#1e293b"/>
-                    <rect x="114" y="14" width="32" height="32" rx="3" fill="white"/>
-                    <rect x="120" y="20" width="20" height="20" rx="2" fill="#1e293b"/>
-                    <rect x="8" y="108" width="44" height="44" rx="6" fill="#1e293b"/>
-                    <rect x="14" y="114" width="32" height="32" rx="3" fill="white"/>
-                    <rect x="20" y="120" width="20" height="20" rx="2" fill="#1e293b"/>
-                    {/* Паттерн точек */}
-                    {[60,68,76,84,92,100].map(x =>
-                      [60,68,76,84,92,100].map(y =>
-                        Math.random() > 0.45 ? <rect key={`${x}-${y}`} x={x} y={y} width="6" height="6" rx="1" fill="#1e293b"/> : null
-                      )
-                    )}
-                    {[60,68,76,84,92,100].map(x =>
-                      [116,124,132,140].map(y =>
-                        Math.random() > 0.45 ? <rect key={`b${x}-${y}`} x={x} y={y} width="6" height="6" rx="1" fill="#1e293b"/> : null
-                      )
-                    )}
-                    {[116,124,132,140].map(x =>
-                      [60,68,76,84].map(y =>
-                        Math.random() > 0.45 ? <rect key={`c${x}-${y}`} x={x} y={y} width="6" height="6" rx="1" fill="#1e293b"/> : null
-                      )
-                    )}
-                    {/* Логотип по центру */}
-                    <rect x="70" y="70" width="20" height="20" rx="4" fill="white"/>
-                    <text x="80" y="83" textAnchor="middle" fontSize="11" fontWeight="900" fill="#1e293b">НВД</text>
-                  </svg>
+                  <img
+                    src="https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/bc0b948f-ae6f-4d1b-8800-8f057474320b.png"
+                    alt="QR-код приглашения"
+                    width={160}
+                    height={160}
+                    className="rounded-lg"
+                  />
                 </div>
               </div>
 
