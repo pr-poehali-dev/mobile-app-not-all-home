@@ -115,12 +115,6 @@ export default function Index() {
   const [cardIndex, setCardIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
 
-  // Профиль текущего пользователя (Глеб — idx 0)
-  const [myName, setMyName] = useState('Глеб');
-  const [myAvatarIdx, setMyAvatarIdx] = useState(0);
-  const [editingName, setEditingName] = useState(false);
-  const [nameInput, setNameInput] = useState('Глеб');
-
   // Календарь настроений
   const [calMonth, setCalMonth] = useState(1); // 0=январь … 11=декабрь (начинаем с февраля=1)
   const [calYear, setCalYear] = useState(2026);
@@ -513,74 +507,11 @@ export default function Index() {
   if (screen === 'profile')
     return (
       <Phone>
-        <div className="px-6 pt-14 pb-28 overflow-y-auto">
+        <div className="px-6 pt-16 pb-28">
           <BackBtn onClick={() => go('home')} />
+          <h1 className="font-display font-black text-4xl leading-[0.95] text-black mt-5">Профиль<br />семьи</h1>
 
-          {/* Моя карточка */}
-          <div className="mt-4 bg-slate-50 rounded-3xl p-5 border border-slate-100">
-            <p className="text-xs font-bold tracking-widest text-slate-400 uppercase mb-3">Это я</p>
-
-            {/* Аватар + имя */}
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <FamilyAvatar idx={myAvatarIdx} size={64} />
-                <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow border border-slate-200">
-                  <Icon name="Pencil" size={12} className="text-slate-500" />
-                </div>
-              </div>
-              <div className="flex-1">
-                {editingName ? (
-                  <div className="flex gap-2 items-center">
-                    <input
-                      autoFocus
-                      value={nameInput}
-                      onChange={e => setNameInput(e.target.value)}
-                      onKeyDown={e => { if (e.key === 'Enter') { setMyName(nameInput.trim() || myName); setEditingName(false); } }}
-                      className="flex-1 border-2 border-brand-blue rounded-xl px-3 py-2 font-display font-bold text-lg text-black outline-none"
-                      maxLength={16}
-                    />
-                    <button
-                      onClick={() => { setMyName(nameInput.trim() || myName); setEditingName(false); }}
-                      className="w-9 h-9 rounded-xl bg-brand-blue flex items-center justify-center active:scale-90 transition-transform"
-                    >
-                      <Icon name="Check" size={16} className="text-white" />
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => { setNameInput(myName); setEditingName(true); }}
-                    className="flex items-center gap-2 group"
-                  >
-                    <span className="font-display font-black text-2xl text-black">{myName}</span>
-                    <Icon name="Pencil" size={14} className="text-slate-400 group-active:text-black" />
-                  </button>
-                )}
-                <p className="text-xs text-slate-400 mt-0.5">Нажми, чтобы изменить имя</p>
-              </div>
-            </div>
-
-            {/* Выбор аватарки */}
-            <p className="text-xs font-bold tracking-widest text-slate-400 uppercase mt-4 mb-2">Моя аватарка</p>
-            <div className="flex gap-3">
-              {FAMILY.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setMyAvatarIdx(idx)}
-                  className="transition-all active:scale-90"
-                  style={{
-                    borderRadius: '50%',
-                    outline: myAvatarIdx === idx ? '3px solid #1e293b' : '3px solid transparent',
-                    outlineOffset: '2px',
-                  }}
-                >
-                  <FamilyAvatar idx={idx} size={52} />
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Мой статус */}
-          <p className="mt-5 text-xs font-bold tracking-widest text-slate-400 uppercase">Мой статус</p>
+          <p className="mt-6 text-xs font-bold tracking-widest text-slate-400 uppercase">Мой статус</p>
           <div className="grid grid-cols-3 gap-2 mt-3">
             {STATUSES.map(s => {
               const active = status === s.id;
@@ -595,11 +526,9 @@ export default function Index() {
             })}
           </div>
 
-          {/* Остальные участники — только просмотр */}
-          <p className="mt-5 text-xs font-bold tracking-widest text-slate-400 uppercase">Семья</p>
+          <p className="mt-7 text-xs font-bold tracking-widest text-slate-400 uppercase">Кто где сейчас</p>
           <div className="mt-3 bg-slate-100 rounded-3xl p-4 space-y-3">
             {FAMILY.map((f, idx) => {
-              if (idx === myAvatarIdx) return null; // себя не показываем в этом списке
               const st = STATUSES.find(s => s.id === f.status)!;
               return (
                 <div key={f.name} className="flex items-center gap-3">
