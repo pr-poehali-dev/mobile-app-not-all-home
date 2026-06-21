@@ -17,17 +17,18 @@ const MOODS = [
 ];
 
 const STATUSES = [
-  { id: 'home', label: 'Дома', icon: 'House', color: '#4FC3E8' },
-  { id: 'work', label: 'На работе', icon: 'Briefcase', color: '#F4922B' },
-  { id: 'school', label: 'В школе', icon: 'GraduationCap', color: '#C9A8DA' },
+  { id: 'home',    label: 'Дома',        icon: 'House' },
+  { id: 'work',    label: 'На работе',   icon: 'Briefcase' },
+  { id: 'school',  label: 'В школе',     icon: 'GraduationCap' },
+  { id: 'outside', label: 'На прогулке', icon: 'TreePine' },
 ];
 
 /* Глеб=голубой, Мама=оранжевая, Соня=фиолетовая, Папа=красный */
 const FAMILY = [
-  { name: 'Глеб', img: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/730da574-7b26-4e12-9a3c-64fb67a4b60b.png', status: 'home' },
-  { name: 'Мама', img: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/e6bc4399-bf4e-49e0-84c9-1a5eac07e3db.png', status: 'home' },
-  { name: 'Соня', img: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/138c1eb7-1eda-43c6-9790-173d1058ed63.png', status: 'school' },
-  { name: 'Папа', img: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/7865ce3f-e2ae-4a60-b951-48f23dfe2292.png', status: 'work' },
+  { name: 'Глеб', img: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/730da574-7b26-4e12-9a3c-64fb67a4b60b.png', status: 'home',   avatarColor: '#4FC3E8' },
+  { name: 'Мама', img: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/e6bc4399-bf4e-49e0-84c9-1a5eac07e3db.png', status: 'home',   avatarColor: '#F4922B' },
+  { name: 'Соня', img: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/138c1eb7-1eda-43c6-9790-173d1058ed63.png', status: 'school', avatarColor: '#C9A8DA' },
+  { name: 'Папа', img: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/7865ce3f-e2ae-4a60-b951-48f23dfe2292.png', status: 'work',   avatarColor: '#E63946' },
 ];
 
 const EVENTS = [
@@ -585,14 +586,15 @@ export default function Index() {
 
           {/* ── Мой статус ── */}
           <p className="mt-6 text-xs font-bold tracking-widest text-slate-400 uppercase">Мой статус</p>
-          <div className="grid grid-cols-3 gap-2 mt-3">
+          <div className="grid grid-cols-2 gap-2 mt-3">
             {STATUSES.map(s => {
               const active = status === s.id;
+              const myColor = AVATAR_COLORS[myColorIdx].color;
               return (
                 <button key={s.id} onClick={() => setStatus(s.id)}
-                  className="rounded-2xl py-4 flex flex-col items-center gap-1.5 transition-all active:scale-95"
-                  style={{ background: active ? s.color : '#F1F5F9', color: active ? '#fff' : '#64748B' }}>
-                  <Icon name={s.icon} size={24} />
+                  className="rounded-2xl py-3.5 flex flex-col items-center gap-1.5 transition-all active:scale-95"
+                  style={{ background: active ? myColor : '#F1F5F9', color: active ? '#fff' : '#64748B' }}>
+                  <Icon name={s.icon} size={22} />
                   <span className="text-xs font-semibold">{s.label}</span>
                 </button>
               );
@@ -602,17 +604,23 @@ export default function Index() {
           {/* ── Семья (Глеб первый с составным аватаром, остальные — просмотр) ── */}
           <p className="mt-6 text-xs font-bold tracking-widest text-slate-400 uppercase">Семья</p>
           <div className="mt-3 bg-slate-100 rounded-3xl p-4 space-y-3">
-            {/* Глеб — текущий пользователь */}
-            <div className="flex items-center gap-3">
-              <CompositeAvatar faceIdx={myFaceIdx} colorIdx={myColorIdx} size={44} />
-              <span className="font-semibold text-slate-700 flex-1">{myName}</span>
-              <span className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full"
-                style={{ background: (STATUSES.find(s => s.id === status)?.color ?? '#4FC3E8') + '22', color: STATUSES.find(s => s.id === status)?.color }}>
-                <Icon name={STATUSES.find(s => s.id === status)?.icon ?? 'House'} size={13} />
-                {STATUSES.find(s => s.id === status)?.label}
-              </span>
-            </div>
-            {/* Остальные — только просмотр, пропускаем Глеба (idx=0) */}
+            {/* Глеб — текущий пользователь, цвет плашки = цвет его аватара */}
+            {(() => {
+              const myColor = AVATAR_COLORS[myColorIdx].color;
+              const st = STATUSES.find(s => s.id === status)!;
+              return (
+                <div className="flex items-center gap-3">
+                  <CompositeAvatar faceIdx={myFaceIdx} colorIdx={myColorIdx} size={44} />
+                  <span className="font-semibold text-slate-700 flex-1">{myName}</span>
+                  <span className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full"
+                    style={{ background: myColor + '33', color: myColor }}>
+                    <Icon name={st?.icon ?? 'House'} size={13} />
+                    {st?.label}
+                  </span>
+                </div>
+              );
+            })()}
+            {/* Остальные — только просмотр, цвет плашки = avatarColor */}
             {FAMILY.slice(1).map((f, i) => {
               const idx = i + 1;
               const st = STATUSES.find(s => s.id === f.status)!;
@@ -620,7 +628,8 @@ export default function Index() {
                 <div key={f.name} className="flex items-center gap-3">
                   <FamilyAvatar idx={idx} size={44} />
                   <span className="font-semibold text-slate-700 flex-1">{f.name}</span>
-                  <span className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full text-[#f4922b]" style={{ background: st.color + '22', color: st.color }}>
+                  <span className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full"
+                    style={{ background: f.avatarColor + '33', color: f.avatarColor }}>
                     <Icon name={st.icon} size={13} />
                     {st.label}
                   </span>
