@@ -150,6 +150,8 @@ export default function Index() {
   const [editingName, setEditingName] = useState(false);
   const [nameInput, setNameInput] = useState('Глеб');
   const [avatarStep, setAvatarStep] = useState<'face' | 'color' | null>(null);
+  const [showInvite, setShowInvite] = useState(false);
+  const INVITE_CODE = 'NVD-2026-СЕМЬЯ';
 
   // Календарь настроений
   const [calMonth, setCalMonth] = useState(1); // 0=январь … 11=декабрь (начинаем с февраля=1)
@@ -602,7 +604,14 @@ export default function Index() {
           </div>
 
           {/* ── Семья (Глеб первый с составным аватаром, остальные — просмотр) ── */}
-          <p className="mt-6 text-xs font-bold tracking-widest text-slate-400 uppercase">Семья</p>
+          <div className="mt-6 flex items-center justify-between">
+            <p className="text-xs font-bold tracking-widest text-slate-400 uppercase">Семья</p>
+            <button onClick={() => setShowInvite(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 active:scale-90 transition-transform">
+              <Icon name="UserPlus" size={14} className="text-slate-600" />
+              <span className="text-xs font-bold text-slate-600">Добавить</span>
+            </button>
+          </div>
           <div className="mt-3 bg-slate-100 rounded-3xl p-4 space-y-3">
             {/* Глеб — текущий пользователь, цвет плашки = цвет его аватара */}
             {(() => {
@@ -638,6 +647,72 @@ export default function Index() {
             })}
           </div>
         </div>
+
+        {/* ── Всплывашка приглашения ── */}
+        {showInvite && (
+          <div className="absolute inset-0 bg-black/40 z-40 flex items-end" onClick={() => setShowInvite(false)}>
+            <div className="w-full bg-white rounded-t-3xl p-6 pb-10 animate-fade-in" onClick={e => e.stopPropagation()}>
+              <div className="flex items-center justify-between mb-5">
+                <div>
+                  <p className="font-display font-black text-xl text-black">Пригласи в семью</p>
+                  <p className="text-xs text-slate-400 mt-0.5">Покажи QR или поделись кодом</p>
+                </div>
+                <button onClick={() => setShowInvite(false)} className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center active:scale-90 shrink-0">
+                  <Icon name="X" size={18} className="text-slate-600" />
+                </button>
+              </div>
+
+              {/* QR-код — SVG-имитация */}
+              <div className="flex justify-center mb-5">
+                <div className="p-3 bg-white rounded-2xl border-2 border-slate-100 shadow-sm">
+                  <svg width="160" height="160" viewBox="0 0 160 160" fill="none">
+                    {/* Угловые маркеры */}
+                    <rect x="8" y="8" width="44" height="44" rx="6" fill="#1e293b"/>
+                    <rect x="14" y="14" width="32" height="32" rx="3" fill="white"/>
+                    <rect x="20" y="20" width="20" height="20" rx="2" fill="#1e293b"/>
+                    <rect x="108" y="8" width="44" height="44" rx="6" fill="#1e293b"/>
+                    <rect x="114" y="14" width="32" height="32" rx="3" fill="white"/>
+                    <rect x="120" y="20" width="20" height="20" rx="2" fill="#1e293b"/>
+                    <rect x="8" y="108" width="44" height="44" rx="6" fill="#1e293b"/>
+                    <rect x="14" y="114" width="32" height="32" rx="3" fill="white"/>
+                    <rect x="20" y="120" width="20" height="20" rx="2" fill="#1e293b"/>
+                    {/* Паттерн точек */}
+                    {[60,68,76,84,92,100].map(x =>
+                      [60,68,76,84,92,100].map(y =>
+                        Math.random() > 0.45 ? <rect key={`${x}-${y}`} x={x} y={y} width="6" height="6" rx="1" fill="#1e293b"/> : null
+                      )
+                    )}
+                    {[60,68,76,84,92,100].map(x =>
+                      [116,124,132,140].map(y =>
+                        Math.random() > 0.45 ? <rect key={`b${x}-${y}`} x={x} y={y} width="6" height="6" rx="1" fill="#1e293b"/> : null
+                      )
+                    )}
+                    {[116,124,132,140].map(x =>
+                      [60,68,76,84].map(y =>
+                        Math.random() > 0.45 ? <rect key={`c${x}-${y}`} x={x} y={y} width="6" height="6" rx="1" fill="#1e293b"/> : null
+                      )
+                    )}
+                    {/* Логотип по центру */}
+                    <rect x="70" y="70" width="20" height="20" rx="4" fill="white"/>
+                    <text x="80" y="83" textAnchor="middle" fontSize="11" fontWeight="900" fill="#1e293b">НВД</text>
+                  </svg>
+                </div>
+              </div>
+
+              {/* Код */}
+              <p className="text-center text-xs text-slate-400 font-medium mb-2">или поделись кодом</p>
+              <div className="flex items-center gap-3 bg-slate-100 rounded-2xl px-4 py-3">
+                <span className="font-display font-black text-lg text-black tracking-widest flex-1 text-center">{INVITE_CODE}</span>
+                <button
+                  onClick={() => navigator.clipboard?.writeText(INVITE_CODE)}
+                  className="w-9 h-9 rounded-xl bg-white flex items-center justify-center shadow-sm active:scale-90 transition-transform shrink-0">
+                  <Icon name="Copy" size={16} className="text-slate-600" />
+                </button>
+              </div>
+              <p className="text-center text-xs text-slate-400 mt-3">Код действует 7 дней</p>
+            </div>
+          </div>
+        )}
 
         {/* ── Всплывашка редактора аватара ── */}
         {avatarStep !== null && (
