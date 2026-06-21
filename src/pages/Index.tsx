@@ -22,22 +22,17 @@ const STATUSES = [
   { id: 'school', label: 'В школе', icon: 'GraduationCap', color: '#C9A8DA' },
 ];
 
-/* Глеб=0(голубой), Мама=1(оранжевая), Соня=2(фиолетовая), Папа=3(красный) */
-const FAMILY_MEMBERS = [
-  { name: 'Глеб',  avatarIdx: 0, status: 'home',   color: '#4FC3E8' },
-  { name: 'Мама',  avatarIdx: 1, status: 'home',   color: '#F4922B' },
-  { name: 'Соня',  avatarIdx: 2, status: 'school', color: '#C9A8DA' },
-  { name: 'Папа',  avatarIdx: 3, status: 'work',   color: '#E63946' },
+const FAMILY = [
+  { name: 'Мама', avatar: '👩', status: 'home' },
+  { name: 'Папа', avatar: '👨', status: 'work' },
+  { name: 'Соня', avatar: '👧', status: 'school' },
 ];
 
-/* Для обратной совместимости */
-const FAMILY = FAMILY_MEMBERS.map(m => ({ name: m.name, avatar: '', status: m.status }));
-
 const EVENTS = [
-  { id: 0, title: 'Вечер кино',         date: '22 мар', sub: 'сегодня',       daysLeft: 0,  color: '#4FC3E8', emoji: '🎬', participants: [0,1,2,3] },
-  { id: 1, title: 'День рождения папы', date: '27 мар', sub: 'через 5 дней',  daysLeft: 5,  color: '#F4922B', emoji: '🎂', participants: [0,1,2,3] },
-  { id: 2, title: 'Пикник на природе',  date: '5 апр',  sub: 'через 14 дней', daysLeft: 14, color: '#E63946', emoji: '🌿', participants: [0,1,2,3] },
-  { id: 3, title: 'Поездка на море',    date: '12 апр', sub: 'через 20 дней', daysLeft: 20, color: '#C9A8DA', emoji: '🏖️', participants: [0,1,2,3] },
+  { id: 0, title: 'Вечер кино', date: '22 мар', sub: 'сегодня', daysLeft: 0, color: '#4FC3E8', emoji: '🎬', participants: ['😊','😄','😋','😡'] },
+  { id: 1, title: 'День рождения папы', date: '27 мар', sub: 'через 5 дней', daysLeft: 5, color: '#F4922B', emoji: '🎂', participants: ['🤩','😮','😑','😤'] },
+  { id: 2, title: 'Пикник на природе', date: '5 апр', sub: 'через 14 дней', daysLeft: 14, color: '#E63946', emoji: '🌿', participants: ['😊','😄','😋','😡'] },
+  { id: 3, title: 'Поездка на море', date: '12 апр', sub: 'через 20 дней', daysLeft: 20, color: '#C9A8DA', emoji: '🏖️', participants: ['🤩','😮','😑','😤'] },
 ];
 
 const CARDS = [
@@ -81,29 +76,6 @@ const WelcomeArt = () => (
     </svg>
   </div>
 );
-
-/* ─── фирменные аватары семьи (вырезка из одного изображения) ── */
-const AVATAR_IMG = 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/be575b26-fdbc-4c86-993e-14bd37ffdfe6.png';
-
-const FamilyAvatar = ({ idx, size = 44 }: { idx: number; size?: number }) => {
-  /* Изображение 4 круга в ряд, каждый занимает 25% ширины.
-     Позиционируем через background-image так чтобы показать нужный круг. */
-  const pct = (idx / 3) * 100;
-  return (
-    <div
-      style={{
-        width: size,
-        height: size,
-        borderRadius: '50%',
-        backgroundImage: `url(${AVATAR_IMG})`,
-        backgroundSize: '400% 100%',
-        backgroundPosition: `${pct}% center`,
-        backgroundRepeat: 'no-repeat',
-        flexShrink: 0,
-      }}
-    />
-  );
-};
 
 /* ─── персонаж карточной игры ────────────────────────── */
 const CardCharacter = () => (
@@ -345,8 +317,10 @@ export default function Index() {
           <div className="mb-6">
             <p className="text-sm text-slate-500 font-medium mb-3">Участники:</p>
             <div className="flex gap-2">
-              {ev.participants.map((idx, i) => (
-                <FamilyAvatar key={i} idx={idx} size={48} />
+              {ev.participants.map((p, i) => (
+                <div key={i} className="w-12 h-12 rounded-full flex items-center justify-center text-2xl shadow-sm border-2 border-white" style={{ background: EVENTS[i % EVENTS.length].color }}>
+                  {p}
+                </div>
               ))}
             </div>
           </div>
@@ -476,11 +450,11 @@ export default function Index() {
 
           <p className="mt-7 text-xs font-bold tracking-widest text-slate-400 uppercase">Кто где сейчас</p>
           <div className="mt-3 bg-slate-100 rounded-3xl p-4 space-y-3">
-            {FAMILY_MEMBERS.map(f => {
+            {FAMILY.map(f => {
               const st = STATUSES.find(s => s.id === f.status)!;
               return (
                 <div key={f.name} className="flex items-center gap-3">
-                  <FamilyAvatar idx={f.avatarIdx} size={44} />
+                  <div className="w-11 h-11 rounded-full bg-white flex items-center justify-center text-xl shadow-sm">{f.avatar}</div>
                   <span className="font-semibold text-slate-700 flex-1">{f.name}</span>
                   <span className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: st.color + '22', color: st.color }}>
                     <Icon name={st.icon} size={13} />
