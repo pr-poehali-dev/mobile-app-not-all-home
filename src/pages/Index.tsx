@@ -882,20 +882,52 @@ export default function Index() {
             </div>
           </div>
 
-          {/* ── Ответ (показывается после нажатия ротации) ── */}
-          {flipped && (
-            <div className="mx-5 mt-12 bg-white rounded-2xl border-2 px-4 py-3 animate-pop shrink-0"
-              style={{ borderColor: cardMeta.color }}>
-              <p className="text-[11px] font-bold uppercase tracking-widest mb-0.5" style={{ color: cardMeta.color }}>Ответ</p>
-              <p className="font-display font-black text-lg text-black">{card.answer}</p>
+          {/* ── Ответ — только если сейчас ход Глеба ── */}
+          {currentPlayerIdx % FAMILY.length === 0 ? (
+            <div className="mx-5 mt-12 shrink-0">
+              {!flipped ? (
+                <button
+                  onClick={() => setFlipped(true)}
+                  className="w-full py-3.5 rounded-2xl font-display font-bold text-base text-white active:scale-95 transition-transform animate-pop"
+                  style={{ background: cardMeta.color }}
+                >
+                  Показать ответ
+                </button>
+              ) : (
+                <div className="rounded-2xl border-2 px-4 py-3 animate-pop bg-white"
+                  style={{ borderColor: cardMeta.color }}>
+                  <p className="text-[11px] font-bold uppercase tracking-widest mb-0.5" style={{ color: cardMeta.color }}>Ответ</p>
+                  <p className="font-display font-black text-lg text-black">{card.answer}</p>
+                </div>
+              )}
             </div>
-          )}
-
-          {/* ── Подпись ── */}
-          {!flipped && (
-            <p className="text-center text-slate-400 text-sm font-medium shrink-0 mt-12 animate-fade-in" style={{ animationDelay: '0.25s', opacity: 0 }}>
-              Подумай и ответь!
-            </p>
+          ) : (
+            /* Не мой ход — подсказка кому достаётся очко */
+            <div className="mx-5 mt-12 shrink-0">
+              <div className="rounded-2xl bg-slate-50 px-4 py-3 text-center">
+                {card.type === 'СУПЕР-КАРТА' ? (
+                  <p className="text-sm font-bold text-slate-600">
+                    ⭐ Супер-карта — очки <span style={{ color: cardMeta.color }}>удваиваются</span>!<br />
+                    <span className="text-slate-400 font-medium text-xs">Кто угадает — получает ×2</span>
+                  </p>
+                ) : card.type === 'ВЫПОЛНЯЙКА' ? (
+                  <p className="text-sm font-bold text-slate-600">
+                    Очко достаётся тому,<br />
+                    <span className="text-slate-400 font-medium text-xs">кто первым угадает действие</span>
+                  </p>
+                ) : card.type === 'ОБЪЯСНЯЙКА' ? (
+                  <p className="text-sm font-bold text-slate-600">
+                    Очко достаётся тому,<br />
+                    <span className="text-slate-400 font-medium text-xs">кто первым назовёт правильный ответ</span>
+                  </p>
+                ) : (
+                  <p className="text-sm font-bold text-slate-600">
+                    Очко достаётся <span style={{ color: cardMeta.color }}>{currentPlayer.name}</span>,<br />
+                    <span className="text-slate-400 font-medium text-xs">если ответит правильно</span>
+                  </p>
+                )}
+              </div>
+            </div>
           )}
 
           {/* ── Кнопки ── */}
@@ -904,11 +936,6 @@ export default function Index() {
               <button onClick={prevCard}
                 className="flex-1 py-4 rounded-2xl bg-slate-100 text-slate-700 font-display font-bold text-base active:scale-95 transition-transform">
                 Назад
-              </button>
-              <button onClick={() => setFlipped(!flipped)}
-                className="w-14 h-14 rounded-2xl flex items-center justify-center active:scale-90 transition-transform shadow-md shrink-0"
-                style={{ background: cardMeta.color }}>
-                <Icon name="RefreshCw" size={22} className="text-white" />
               </button>
               <button onClick={nextCard}
                 className="flex-1 py-4 rounded-2xl text-white font-display font-bold text-base active:scale-95 transition-transform shadow-md"
