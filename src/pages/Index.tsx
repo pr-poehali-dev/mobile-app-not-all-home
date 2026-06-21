@@ -361,25 +361,48 @@ export default function Index() {
   }
 
   /* ── EVENTS INTRO (вступительный экран событий) ── */
-  if (screen === 'eventsIntro')
+  if (screen === 'eventsIntro') {
+    const nextEvent = EVENTS[1]; // ближайшее событие — День рождения папы
     return (
       <Phone>
-        <div className="relative h-full flex flex-col">
-          <div className="flex-1 overflow-hidden">
+        <div className="relative h-full flex flex-col px-7 pt-14 pb-10">
+          <BackBtn onClick={() => go('home')} />
+
+          {/* Заголовок — ближайшее событие */}
+          <h1 className="font-display font-black text-[28px] leading-tight text-black mt-5">{nextEvent.title}</h1>
+          <p className="mt-1 text-slate-400 text-sm">{nextEvent.date}</p>
+
+          <div className="mt-4">
+            <p className="text-slate-500 text-sm font-medium">Осталось</p>
+            <p className="font-display font-black text-5xl text-black">{nextEvent.daysLeft} {pluralDays(nextEvent.daysLeft)}</p>
+          </div>
+
+          {/* Картинка по центру */}
+          <div className="flex-1 flex items-center justify-center py-2">
             <img
-              src="https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/b73a94ac-cd41-44bd-b436-21036720a9f1.png"
-              alt="События семьи"
-              className="w-full h-full object-cover object-top"
+              src="https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/022bebea-1d37-4424-8ef8-a93a0279fda5.png"
+              alt="День рождения"
+              className="w-full max-w-[240px] object-contain"
             />
           </div>
-          <div className="px-7 pb-10 pt-4 bg-white">
-            <button onClick={() => go('eventsList')} className="w-full py-4 rounded-2xl font-display font-bold text-lg shadow-lg active:scale-95 transition-transform text-white" style={{ background: '#F4922B' }}>
-              Спланировать
-            </button>
+
+          {/* Участники */}
+          <div className="mb-6">
+            <p className="text-sm text-slate-500 font-medium mb-3">Участники:</p>
+            <div className="flex gap-2">
+              {[0,1,2,3].map(idx => (
+                <FamilyAvatar key={idx} idx={idx} size={48} />
+              ))}
+            </div>
           </div>
+
+          <button onClick={() => go('eventsList')} className="w-full py-4 rounded-2xl font-display font-bold text-lg shadow-lg active:scale-95 transition-transform text-white" style={{ background: nextEvent.color }}>
+            Спланировать
+          </button>
         </div>
       </Phone>
     );
+  }
 
   /* ── EVENTS LIST ── */
   if (screen === 'eventsList')
