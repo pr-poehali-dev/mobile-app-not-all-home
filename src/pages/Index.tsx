@@ -192,6 +192,14 @@ export default function Index() {
   const [avatarStep, setAvatarStep] = useState<'face' | 'color' | null>(null);
   const [showInvite, setShowInvite] = useState(false);
   const INVITE_CODE = 'NVD-2026-СЕМЬЯ';
+  const [showFamilyMoods, setShowFamilyMoods] = useState(false);
+
+  // Демо-настроения других членов семьи за сегодня
+  const FAMILY_MOODS_TODAY = [
+    { memberIdx: 1, moodIdx: 1 }, // Мама — хорошо
+    { memberIdx: 2, moodIdx: 0 }, // Соня — спокойно
+    { memberIdx: 3, moodIdx: 3 }, // Папа — злится
+  ];
 
   // Календарь настроений
   const [calMonth, setCalMonth] = useState(1); // 0=январь … 11=декабрь (начинаем с февраля=1)
@@ -278,13 +286,13 @@ export default function Index() {
         <div className="relative h-full flex flex-col px-7 pt-14 pb-10">
           <BackBtn onClick={() => go('home')} />
 
-          <h1 className="font-display font-black text-[28px] leading-tight text-black mt-5">Трекер<br />настроений</h1>
-          <p className="mt-2 text-slate-400 text-sm leading-snug">
+          <h1 className="font-display font-black text-[28px] leading-tight text-black mt-5 animate-fade-in">Трекер<br />настроений</h1>
+          <p className="mt-2 text-slate-400 text-sm leading-snug animate-fade-in" style={{ animationDelay: '0.1s', opacity: 0 }}>
             Отмечайте настроение каждый день<br />и следите за эмоциональной<br />атмосферой в семье.
           </p>
 
           {/* Картинка по центру */}
-          <div className="flex-1 flex items-center justify-center py-4">
+          <div className="flex-1 flex items-center justify-center py-4 animate-scale-in" style={{ animationDelay: '0.15s', opacity: 0 }}>
             <img
               src="https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/1662741b-084a-407b-b57a-6709bfb9311c.png"
               alt="Настроения"
@@ -299,7 +307,7 @@ export default function Index() {
             <Feat color="#F4922B" text="Поддержка близких" />
           </div>
 
-          <button onClick={() => go('moodMain')} className="w-full py-4 rounded-2xl bg-brand-orange text-white font-display font-bold text-lg shadow-lg active:scale-95 transition-transform">
+          <button onClick={() => go('moodMain')} className="w-full py-4 rounded-2xl bg-brand-orange text-white font-display font-bold text-lg shadow-lg active:scale-95 transition-transform animate-fade-in" style={{ animationDelay: '0.3s', opacity: 0 }}>
             Начать отслеживать
           </button>
         </div>
@@ -311,11 +319,29 @@ export default function Index() {
     return (
       <Phone>
         <div className="px-5 pt-16 pb-28">
-          <p className="text-xs font-semibold tracking-widest text-slate-400 uppercase">Семья</p>
-          <h1 className="font-display font-black text-3xl leading-tight text-black mt-1">Календарь<br />настроений</h1>
+          <div className="flex items-start justify-between">
+            <div>
+              <p className="text-xs font-semibold tracking-widest text-slate-400 uppercase animate-fade-in">Семья</p>
+              <h1 className="font-display font-black text-3xl leading-tight text-black mt-1 animate-fade-in">Календарь<br />настроений</h1>
+            </div>
+            {/* Кнопка «Настроение семьи» */}
+            <button
+              onClick={() => setShowFamilyMoods(true)}
+              className="flex flex-col items-center gap-1 mt-1 active:scale-90 transition-transform animate-fade-in"
+            >
+              <div className="flex -space-x-2">
+                {FAMILY_MOODS_TODAY.map((fm, i) => (
+                  <div key={i} className="w-8 h-8 rounded-full overflow-hidden border-2 border-white">
+                    <FamilyAvatar idx={fm.memberIdx} size={32} />
+                  </div>
+                ))}
+              </div>
+              <span className="text-[10px] font-bold text-slate-400">Семья</span>
+            </button>
+          </div>
 
           {/* Календарь */}
-          <div className="mt-4 bg-slate-100 rounded-3xl p-3">
+          <div className="mt-4 bg-slate-100 rounded-3xl p-3 animate-scale-in">
             {/* Навигация по месяцам */}
             <div className="flex items-center justify-between mb-3 px-1">
               <button onClick={prevMonth} className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm active:scale-90 transition-transform">
@@ -368,7 +394,7 @@ export default function Index() {
           </div>
 
           {/* Выбор настроения */}
-          <div className="mt-3 bg-slate-100 rounded-3xl p-4">
+          <div className="mt-3 bg-slate-100 rounded-3xl p-4 animate-fade-in" style={{ animationDelay: '0.15s', opacity: 0 }}>
             <p className="font-display font-bold text-base text-black text-center">
               {pickingDay ? `${pickingDay} ${MONTHS[calMonth].toLowerCase()}` : 'Сегодня'}
             </p>
@@ -395,6 +421,68 @@ export default function Index() {
             </div>
           </div>
         </div>
+        {/* ── Всплывашка настроений семьи ── */}
+        {showFamilyMoods && (
+          <div className="absolute inset-0 bg-black/40 z-40 flex items-end" onClick={() => setShowFamilyMoods(false)}>
+            <div className="w-full bg-white rounded-t-3xl px-6 pt-5 pb-10 animate-fade-in" onClick={e => e.stopPropagation()}>
+              <div className="flex items-center justify-between mb-5">
+                <div>
+                  <p className="font-display font-black text-xl text-black">Настроение семьи</p>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    {pickingDay ? `${pickingDay} ${MONTHS[calMonth].toLowerCase()}` : 'Сегодня'}
+                  </p>
+                </div>
+                <button onClick={() => setShowFamilyMoods(false)} className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center active:scale-90">
+                  <Icon name="X" size={18} className="text-slate-600" />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                {FAMILY_MOODS_TODAY.map((fm, i) => {
+                  const member = FAMILY[fm.memberIdx];
+                  const mood = MOODS[fm.moodIdx];
+                  return (
+                    <div key={i} className="flex items-center gap-4">
+                      <FamilyAvatar idx={fm.memberIdx} size={44} />
+                      <div className="flex-1">
+                        <p className="font-bold text-slate-800 text-sm">{member.name}</p>
+                        <p className="text-xs text-slate-400">{mood.label}</p>
+                      </div>
+                      <div className="w-12 h-12 rounded-full overflow-hidden" style={{ background: mood.bg }}>
+                        <img src={mood.img} alt={mood.label} className="w-full h-full object-cover" />
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {/* Глеб (текущий пользователь) */}
+                {(() => {
+                  const myMoodIdx = dayMoods[moodKey(pickingDay ?? today.getDate())];
+                  const myMood = myMoodIdx !== undefined ? MOODS[myMoodIdx] : null;
+                  return (
+                    <div className="flex items-center gap-4">
+                      <CompositeAvatar faceIdx={myFaceIdx} colorIdx={myColorIdx} size={44} />
+                      <div className="flex-1">
+                        <p className="font-bold text-slate-800 text-sm">{myName} <span className="text-slate-400 font-normal">(я)</span></p>
+                        <p className="text-xs text-slate-400">{myMood ? myMood.label : 'Не отмечено'}</p>
+                      </div>
+                      {myMood ? (
+                        <div className="w-12 h-12 rounded-full overflow-hidden" style={{ background: myMood.bg }}>
+                          <img src={myMood.img} alt={myMood.label} className="w-full h-full object-cover" />
+                        </div>
+                      ) : (
+                        <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center">
+                          <Icon name="Minus" size={18} className="text-slate-300" />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
+              </div>
+            </div>
+          </div>
+        )}
+
         <BottomNav active="mood" onNav={go} />
       </Phone>
     );
@@ -630,13 +718,13 @@ export default function Index() {
         <div className="relative h-full flex flex-col px-7 pt-14 pb-10">
           <BackBtn onClick={() => go('home')} />
 
-          <h1 className="font-display font-black text-[28px] leading-tight text-black mt-5">Игра<br />«Не все дома»</h1>
-          <p className="mt-2 text-slate-400 text-sm leading-snug">
+          <h1 className="font-display font-black text-[28px] leading-tight text-black mt-5 animate-fade-in">Игра<br />«Не все дома»</h1>
+          <p className="mt-2 text-slate-400 text-sm leading-snug animate-fade-in" style={{ animationDelay: '0.1s', opacity: 0 }}>
             Игра для семьи, которая сближает,<br />веселит и помогает узнать друг друга<br />ещё лучше.
           </p>
 
           {/* Картинка по центру */}
-          <div className="flex-1 flex items-center justify-center py-4">
+          <div className="flex-1 flex items-center justify-center py-4 animate-scale-in" style={{ animationDelay: '0.15s', opacity: 0 }}>
             <img
               src="https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/16187e64-1865-4873-a59f-3722dec9aeec.png"
               alt="Карточки игры"
