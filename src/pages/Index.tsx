@@ -234,14 +234,14 @@ export default function Index() {
     return (
       <Phone>
         <div className="relative h-full flex flex-col">
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1 overflow-hidden animate-scale-in">
             <img
               src="https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/45445f0a-1d35-422f-9c4f-1e554226e97b.png"
               alt="Не все дома"
               className="w-full h-full object-cover object-top"
             />
           </div>
-          <div className="px-7 pb-10 pt-4 bg-white">
+          <div className="px-7 pb-10 pt-4 bg-white animate-fade-in" style={{ animationDelay: '0.25s', opacity: 0 }}>
             <button onClick={() => go('home')} className="w-full py-4 rounded-2xl bg-brand-blue text-white font-display font-bold text-lg shadow-lg active:scale-95 transition-transform">
               Привет, семья!
             </button>
@@ -255,8 +255,8 @@ export default function Index() {
     return (
       <Phone>
         <div className="px-6 pt-16 pb-28">
-          <p className="text-xs font-semibold tracking-widest text-slate-400 uppercase">Добро пожаловать</p>
-          <h1 className="font-display font-black text-5xl leading-[0.9] text-black mt-1">НЕ ВСЕ<br />ДОМА</h1>
+          <p className="text-xs font-semibold tracking-widest text-slate-400 uppercase animate-fade-in">Добро пожаловать</p>
+          <h1 className="font-display font-black text-5xl leading-[0.9] text-black mt-1 animate-fade-in" style={{ animationDelay: '0.05s', opacity: 0 }}>НЕ ВСЕ<br />ДОМА</h1>
 
           <div className="mt-6 bg-white rounded-3xl p-5 border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.06)] animate-scale-in">
             <p className="text-xs text-slate-400">Сегодня <span className="font-semibold text-slate-500">21 марта 2026</span></p>
@@ -267,12 +267,12 @@ export default function Index() {
             </button>
           </div>
 
-          <p className="mt-7 text-xs font-bold tracking-widest text-slate-400 uppercase">Разделы</p>
+          <p className="mt-7 text-xs font-bold tracking-widest text-slate-400 uppercase animate-fade-in" style={{ animationDelay: '0.2s', opacity: 0 }}>Разделы</p>
           <div className="grid grid-cols-2 gap-3 mt-3">
-            <Tile color="#4FC3E8" icon="Heart" title="Настроение" sub="История настроений" onClick={() => go('moodIntro')} />
-            <Tile color="#C9A8DA" icon="Layers" title="Карточки" sub="Вопросы для семьи" onClick={() => go('gameIntro')} />
-            <Tile color="#F4922B" icon="Calendar" title="События" sub="Планы и мероприятия" onClick={() => go('eventsIntro')} />
-            <Tile color="#E63946" icon="Smile" title="Профиль" sub="Члена семьи" onClick={() => go('profile')} />
+            <div className="animate-pop" style={{ animationDelay: '0.25s', opacity: 0 }}><Tile color="#4FC3E8" icon="Heart" title="Настроение" sub="История настроений" onClick={() => go('moodIntro')} /></div>
+            <div className="animate-pop" style={{ animationDelay: '0.32s', opacity: 0 }}><Tile color="#C9A8DA" icon="Layers" title="Карточки" sub="Вопросы для семьи" onClick={() => go('gameIntro')} /></div>
+            <div className="animate-pop" style={{ animationDelay: '0.39s', opacity: 0 }}><Tile color="#F4922B" icon="Calendar" title="События" sub="Планы и мероприятия" onClick={() => go('eventsIntro')} /></div>
+            <div className="animate-pop" style={{ animationDelay: '0.46s', opacity: 0 }}><Tile color="#E63946" icon="Smile" title="Профиль" sub="Члена семьи" onClick={() => go('profile')} /></div>
           </div>
         </div>
         <BottomNav active="home" onNav={go} />
@@ -497,34 +497,36 @@ export default function Index() {
           <BackBtn onClick={() => go('home')} />
 
           {/* Заголовок — ближайшее событие */}
-          <h1 className="font-display font-black text-[28px] leading-tight text-black mt-5">{nextEvent.title}</h1>
-          <p className="mt-1 text-slate-400 text-sm">{nextEvent.date}</p>
+          <h1 className="font-display font-black text-[28px] leading-tight text-black mt-5 animate-fade-in">{nextEvent.title}</h1>
+          <p className="mt-1 text-slate-400 text-sm animate-fade-in" style={{ animationDelay: '0.08s', opacity: 0 }}>{nextEvent.date}</p>
 
-          <div className="mt-4">
+          <div className="mt-4 animate-fade-in" style={{ animationDelay: '0.15s', opacity: 0 }}>
             <p className="text-slate-500 text-sm font-medium">Осталось</p>
             <p className="font-display font-black text-5xl text-black">{nextEvent.daysLeft} {pluralDays(nextEvent.daysLeft)}</p>
           </div>
 
           {/* Картинка по центру */}
-          <div className="flex-1 flex items-center justify-center py-2">
+          <div className="flex-1 flex items-center justify-center py-2 animate-pop" style={{ animationDelay: '0.2s', opacity: 0 }}>
             <img
               src="https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/022bebea-1d37-4424-8ef8-a93a0279fda5.png"
               alt="День рождения"
-              className="w-full max-w-[240px] object-contain"
+              className="w-full max-w-[240px] object-contain animate-float"
             />
           </div>
 
           {/* Участники */}
-          <div className="mb-6">
+          <div className="mb-6 animate-fade-in" style={{ animationDelay: '0.3s', opacity: 0 }}>
             <p className="text-sm text-slate-500 font-medium mb-3">Участники:</p>
             <div className="flex gap-2">
-              {[0,1,2,3].map(idx => (
-                <FamilyAvatar key={idx} idx={idx} size={48} />
+              {[0,1,2,3].map((idx, i) => (
+                <div key={idx} className="animate-pop" style={{ animationDelay: `${0.35 + i * 0.07}s`, opacity: 0 }}>
+                  <FamilyAvatar idx={idx} size={48} />
+                </div>
               ))}
             </div>
           </div>
 
-          <button onClick={() => go('eventsList')} className="w-full py-4 rounded-2xl font-display font-bold text-lg shadow-lg active:scale-95 transition-transform text-white" style={{ background: nextEvent.color }}>
+          <button onClick={() => go('eventsList')} className="w-full py-4 rounded-2xl font-display font-bold text-lg shadow-lg active:scale-95 transition-transform text-white animate-fade-in" style={{ background: nextEvent.color, animationDelay: '0.55s', opacity: 0 }}>
             Спланировать
           </button>
         </div>
@@ -540,10 +542,10 @@ export default function Index() {
           {/* Шапка */}
           <div className="flex items-start justify-between mb-6">
             <div>
-              <p className="text-xs font-semibold tracking-widest text-slate-400 uppercase">Семья</p>
-              <h1 className="font-display font-black text-3xl leading-tight text-black mt-0.5">Календарь<br />событий</h1>
+              <p className="text-xs font-semibold tracking-widest text-slate-400 uppercase animate-fade-in">Семья</p>
+              <h1 className="font-display font-black text-3xl leading-tight text-black mt-0.5 animate-fade-in" style={{ animationDelay: '0.05s', opacity: 0 }}>Календарь<br />событий</h1>
             </div>
-            <button onClick={openNewEvent} className="w-11 h-11 rounded-2xl bg-brand-blue flex items-center justify-center shadow-md active:scale-90 transition-transform mt-1">
+            <button onClick={openNewEvent} className="w-11 h-11 rounded-2xl bg-brand-blue flex items-center justify-center shadow-md active:scale-90 transition-transform mt-1 animate-pop" style={{ animationDelay: '0.1s', opacity: 0 }}>
               <Icon name="Plus" size={22} className="text-white" />
             </button>
           </div>
@@ -553,7 +555,7 @@ export default function Index() {
 
             <div className="space-y-3">
               {events.map((ev, idx) => (
-                <div key={ev.id} className="flex gap-0">
+                <div key={ev.id} className="flex gap-0 animate-fade-in" style={{ animationDelay: `${0.12 + idx * 0.08}s`, opacity: 0 }}>
                   {/* Левая колонка: кружок + дата */}
                   <div className="flex flex-col items-center shrink-0 w-[58px] relative z-10 pt-3">
                     <div className="w-[18px] h-[18px] rounded-full border-[3px] bg-white mb-1" style={{ borderColor: ev.color }} />
@@ -662,8 +664,8 @@ export default function Index() {
               <Icon name="Pencil" size={16} className="text-slate-500" />
             </button>
           </div>
-          <h1 className="font-display font-black text-3xl leading-[1.05] text-black mt-4">{ev.title}</h1>
-          <p className="text-slate-400 text-sm mt-1">{ev.date}</p>
+          <h1 className="font-display font-black text-3xl leading-[1.05] text-black mt-4 animate-fade-in">{ev.title}</h1>
+          <p className="text-slate-400 text-sm mt-1 animate-fade-in" style={{ animationDelay: '0.08s', opacity: 0 }}>{ev.date}</p>
 
           {/* всплывашка формы внутри детали */}
           {showEventForm && (
@@ -685,25 +687,27 @@ export default function Index() {
             </div>
           )}
 
-          <div className="mt-6">
+          <div className="mt-6 animate-fade-in" style={{ animationDelay: '0.15s', opacity: 0 }}>
             <p className="text-slate-500 text-sm font-medium">Осталось</p>
             <p className="font-display font-black text-5xl text-black">{ev.daysLeft === 0 ? 'Сегодня!' : `${ev.daysLeft} ${pluralDays(ev.daysLeft)}`}</p>
           </div>
 
-          <div className="flex-1 flex items-center justify-center">
+          <div className="flex-1 flex items-center justify-center animate-pop" style={{ animationDelay: '0.2s', opacity: 0 }}>
             <div className="text-[130px] leading-none animate-float select-none">{ev.emoji}</div>
           </div>
 
-          <div className="mb-6">
+          <div className="mb-6 animate-fade-in" style={{ animationDelay: '0.3s', opacity: 0 }}>
             <p className="text-sm text-slate-500 font-medium mb-3">Участники:</p>
             <div className="flex gap-2">
               {ev.participants.map((memberIdx, i) => (
-                <FamilyAvatar key={i} idx={memberIdx} size={48} />
+                <div key={i} className="animate-pop" style={{ animationDelay: `${0.35 + i * 0.06}s`, opacity: 0 }}>
+                  <FamilyAvatar idx={memberIdx} size={48} />
+                </div>
               ))}
             </div>
           </div>
 
-          <button className="w-full py-4 rounded-2xl text-white font-display font-bold text-lg shadow-lg active:scale-95 transition-transform" style={{ background: ev.color }}>
+          <button className="w-full py-4 rounded-2xl text-white font-display font-bold text-lg shadow-lg active:scale-95 transition-transform animate-fade-in" style={{ background: ev.color, animationDelay: '0.55s', opacity: 0 }}>
             Спланировать
           </button>
         </div>
@@ -755,8 +759,8 @@ export default function Index() {
         <div className="flex flex-col h-full bg-white">
           {/* шапка */}
           <div className="px-6 pt-14 pb-3">
-            <p className="text-xs text-slate-400 font-medium">{cardIndex + 1} из {total}</p>
-            <h1 className="font-display font-black text-2xl text-black mt-0.5">Карточная игра</h1>
+            <p className="text-xs text-slate-400 font-medium animate-fade-in">{cardIndex + 1} из {total}</p>
+            <h1 className="font-display font-black text-2xl text-black mt-0.5 animate-fade-in" style={{ animationDelay: '0.05s', opacity: 0 }}>Карточная игра</h1>
             {/* прогресс-бар: тонкие сегменты */}
             <div className="flex gap-[3px] mt-3">
               {Array.from({ length: 8 }).map((_, i) => (
@@ -771,7 +775,7 @@ export default function Index() {
 
           {/* карточка */}
           <div className="flex-1 px-5 flex flex-col">
-            <div className="flex-1 bg-slate-50 rounded-3xl overflow-hidden flex flex-col shadow-sm border border-slate-100">
+            <div className="flex-1 bg-slate-50 rounded-3xl overflow-hidden flex flex-col shadow-sm border border-slate-100 animate-scale-in" style={{ animationDelay: '0.1s', opacity: 0 }}>
               {/* картинка-карточка с персонажем */}
               <img
                 src="https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/9fa3ff89-9964-4a30-ac84-cb4b4690058e.jpg"
@@ -780,7 +784,7 @@ export default function Index() {
               />
             </div>
             {/* подпись под карточкой */}
-            <p className="text-center text-slate-500 text-base font-medium mt-4 mb-2">Подумай и ответь!</p>
+            <p className="text-center text-slate-500 text-base font-medium mt-4 mb-2 animate-fade-in" style={{ animationDelay: '0.25s', opacity: 0 }}>Подумай и ответь!</p>
           </div>
 
           {/* кнопки */}
@@ -824,13 +828,13 @@ export default function Index() {
       <Phone>
         <div className="px-6 pt-14 pb-28 overflow-y-auto">
           <BackBtn onClick={() => go('home')} />
-          <h1 className="font-display font-black text-3xl leading-tight text-black mt-4">Мой профиль</h1>
+          <h1 className="font-display font-black text-3xl leading-tight text-black mt-4 animate-fade-in">Мой профиль</h1>
 
           {/* ── Превью аватара + имя ── */}
-          <div className="mt-4 flex items-center gap-4">
+          <div className="mt-4 flex items-center gap-4 animate-fade-in" style={{ animationDelay: '0.1s', opacity: 0 }}>
             {/* аватар — клик открывает всплывашку */}
             <button onClick={() => setAvatarStep('face')}
-              className="relative active:scale-90 transition-transform shrink-0">
+              className="relative active:scale-90 transition-transform shrink-0 animate-pop" style={{ animationDelay: '0.15s', opacity: 0 }}>
               <CompositeAvatar faceIdx={myFaceIdx} colorIdx={myColorIdx} size={72} />
               <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-white rounded-full border border-slate-200 shadow flex items-center justify-center">
                 <Icon name="Pencil" size={11} className="text-slate-500" />
@@ -864,15 +868,15 @@ export default function Index() {
           </div>
 
           {/* ── Мой статус ── */}
-          <p className="mt-6 text-xs font-bold tracking-widest text-slate-400 uppercase">Мой статус</p>
+          <p className="mt-6 text-xs font-bold tracking-widest text-slate-400 uppercase animate-fade-in" style={{ animationDelay: '0.2s', opacity: 0 }}>Мой статус</p>
           <div className="grid grid-cols-2 gap-2 mt-3">
-            {STATUSES.map(s => {
+            {STATUSES.map((s, si) => {
               const active = status === s.id;
               const myColor = AVATAR_COLORS[myColorIdx].color;
               return (
                 <button key={s.id} onClick={() => setStatus(s.id)}
-                  className="rounded-2xl py-3.5 flex flex-col items-center gap-1.5 transition-all active:scale-95"
-                  style={{ background: active ? myColor : '#F1F5F9', color: active ? '#fff' : '#64748B' }}>
+                  className="rounded-2xl py-3.5 flex flex-col items-center gap-1.5 transition-all active:scale-95 animate-pop"
+                  style={{ background: active ? myColor : '#F1F5F9', color: active ? '#fff' : '#64748B', animationDelay: `${0.22 + si * 0.06}s`, opacity: 0 }}>
                   <Icon name={s.icon} size={22} />
                   <span className="text-xs font-semibold">{s.label}</span>
                 </button>
@@ -881,7 +885,7 @@ export default function Index() {
           </div>
 
           {/* ── Семья (Глеб первый с составным аватаром, остальные — просмотр) ── */}
-          <div className="mt-6 flex items-center justify-between">
+          <div className="mt-6 flex items-center justify-between animate-fade-in" style={{ animationDelay: '0.45s', opacity: 0 }}>
             <p className="text-xs font-bold tracking-widest text-slate-400 uppercase">Семья</p>
             <button onClick={() => setShowInvite(true)}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 active:scale-90 transition-transform">
@@ -889,7 +893,7 @@ export default function Index() {
               <span className="text-xs text-slate-600 font-semibold">Добавить</span>
             </button>
           </div>
-          <div className="mt-3 bg-slate-100 rounded-3xl p-4 space-y-3">
+          <div className="mt-3 bg-slate-100 rounded-3xl p-4 space-y-3 animate-scale-in" style={{ animationDelay: '0.5s', opacity: 0 }}>
             {/* Глеб — текущий пользователь, цвет плашки = цвет его аватара */}
             {(() => {
               const myColor = AVATAR_COLORS[myColorIdx].color;
