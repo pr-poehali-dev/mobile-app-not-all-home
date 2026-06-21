@@ -620,7 +620,7 @@ export default function Index() {
                 <div key={f.name} className="flex items-center gap-3">
                   <FamilyAvatar idx={idx} size={44} />
                   <span className="font-semibold text-slate-700 flex-1">{f.name}</span>
-                  <span className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: st.color + '22', color: st.color }}>
+                  <span className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full text-[#f4922b]" style={{ background: st.color + '22', color: st.color }}>
                     <Icon name={st.icon} size={13} />
                     {st.label}
                   </span>
