@@ -10,10 +10,10 @@ type Screen =
 
 /* ─── данные ─────────────────────────────────────────── */
 const MOODS = [
-  { emoji: '😡', bg: '#E63946', label: 'Злюсь' },
-  { emoji: '😢', bg: '#4FC3E8', label: 'Грущу' },
-  { emoji: '😄', bg: '#F4922B', label: 'Радуюсь' },
-  { emoji: '😐', bg: '#C9A8DA', label: 'Спокоен' },
+  { img: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/dcac866a-0361-403c-b746-71f7b93119ed.png', bg: '#C9A8DA', label: 'Спокойно' },
+  { img: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/fc62ad77-0e69-4309-a1fe-7397548c8de5.png', bg: '#F4922B', label: 'Хорошо' },
+  { img: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/55f54fb9-01da-4808-8eb5-a32ed662fb91.png', bg: '#4FC3E8', label: 'Грустно' },
+  { img: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/91156170-b25c-46dd-a90d-49a75f5678f2.png', bg: '#E63946', label: 'Злюсь' },
 ];
 
 const STATUSES = [
@@ -111,12 +111,37 @@ const CardCharacter = () => (
 export default function Index() {
   const [screen, setScreen] = useState<Screen>('welcome');
   const [status, setStatus] = useState('home');
-  const [todayMood, setTodayMood] = useState<number | null>(null);
   const [selectedEvent, setSelectedEvent] = useState(0);
   const [cardIndex, setCardIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
 
+  // Календарь настроений
+  const [calMonth, setCalMonth] = useState(1); // 0=январь … 11=декабрь (начинаем с февраля=1)
+  const [calYear, setCalYear] = useState(2026);
+  // dayMoods: ключ "год-месяц-день" → индекс MOODS
+  const [dayMoods, setDayMoods] = useState<Record<string, number>>(() => {
+    // заполним февраль демо-данными
+    const init: Record<string, number> = {};
+    for (let d = 1; d <= 28; d++) init[`2026-1-${d}`] = d % 4;
+    return init;
+  });
+  const [pickingDay, setPickingDay] = useState<number | null>(null); // день, для которого выбираем настроение
+
   const go = (s: Screen) => { setScreen(s); setFlipped(false); };
+
+  const MONTHS = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+  const prevMonth = () => { if (calMonth === 0) { setCalMonth(11); setCalYear(y => y-1); } else setCalMonth(m => m-1); };
+  const nextMonth = () => { if (calMonth === 11) { setCalMonth(0); setCalYear(y => y+1); } else setCalMonth(m => m+1); };
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+  // день недели первого числа (пн=0)
+  const firstDow = (new Date(calYear, calMonth, 1).getDay() + 6) % 7;
+  const moodKey = (d: number) => `${calYear}-${calMonth}-${d}`;
+  const setDayMood = (d: number, mIdx: number) => {
+    setDayMoods(prev => ({ ...prev, [moodKey(d)]: mIdx }));
+    setPickingDay(null);
+  };
+  const today = new Date();
+  const isToday = (d: number) => today.getFullYear() === calYear && today.getMonth() === calMonth && today.getDate() === d;
 
   /* ── WELCOME ── */
   if (screen === 'welcome')
@@ -191,44 +216,84 @@ export default function Index() {
 
   /* ── MOOD MAIN ── */
   if (screen === 'moodMain') {
-    const days = Array.from({ length: 28 }, (_, i) => i + 1);
     return (
       <Phone>
-        <div className="px-6 pt-16 pb-28">
+        <div className="px-5 pt-16 pb-28">
           <p className="text-xs font-semibold tracking-widest text-slate-400 uppercase">Семья</p>
           <h1 className="font-display font-black text-3xl leading-tight text-black mt-1">Календарь<br />настроений</h1>
-          <div className="mt-5 bg-slate-100 rounded-3xl p-4">
-            <div className="flex items-center justify-between mb-3">
-              <button className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm active:scale-90 transition-transform"><Icon name="ChevronLeft" size={18} /></button>
-              <span className="font-display font-semibold text-lg">Февраль 2026</span>
-              <button className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm active:scale-90 transition-transform"><Icon name="ChevronRight" size={18} /></button>
+
+          {/* Календарь */}
+          <div className="mt-4 bg-slate-100 rounded-3xl p-3">
+            {/* Навигация по месяцам */}
+            <div className="flex items-center justify-between mb-3 px-1">
+              <button onClick={prevMonth} className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm active:scale-90 transition-transform">
+                <Icon name="ChevronLeft" size={18} />
+              </button>
+              <span className="font-display font-bold text-base">{MONTHS[calMonth]} {calYear}</span>
+              <button onClick={nextMonth} className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm active:scale-90 transition-transform">
+                <Icon name="ChevronRight" size={18} />
+              </button>
             </div>
-            <div className="grid grid-cols-7 gap-1 text-center text-[10px] text-slate-400 font-semibold mb-1">
+
+            {/* Дни недели */}
+            <div className="grid grid-cols-7 text-center text-[10px] text-slate-400 font-bold mb-1">
               {['ПН','ВТ','СР','ЧТ','ПТ','СБ','ВС'].map(d => <span key={d}>{d}</span>)}
             </div>
-            <div className="grid grid-cols-7 gap-1">
-              {days.map(d => {
-                const m = MOODS[d % MOODS.length];
+
+            {/* Дни */}
+            <div className="grid grid-cols-7 gap-[3px]">
+              {/* пустые ячейки до первого числа */}
+              {Array.from({ length: firstDow }).map((_, i) => <div key={`e${i}`} />)}
+              {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(d => {
+                const mIdx = dayMoods[moodKey(d)];
+                const mood = mIdx !== undefined ? MOODS[mIdx] : null;
+                const isTod = isToday(d);
                 return (
-                  <div key={d} className="aspect-square rounded-full flex items-center justify-center text-sm relative" style={{ background: m.bg }}>
-                    {m.emoji}
-                    <span className="absolute top-0.5 left-1 text-[8px] font-bold text-white/80">{d}</span>
-                  </div>
+                  <button
+                    key={d}
+                    onClick={() => setPickingDay(pickingDay === d ? null : d)}
+                    className="aspect-square rounded-full flex items-center justify-center relative overflow-hidden transition-transform active:scale-90"
+                    style={{
+                      background: mood ? mood.bg : '#e2e8f0',
+                      outline: pickingDay === d ? '2px solid #000' : isTod ? '2px solid #64748B' : 'none',
+                      outlineOffset: '1px',
+                    }}
+                  >
+                    {mood
+                      ? <img src={mood.img} alt={mood.label} className="w-full h-full object-cover" />
+                      : <span className="text-[10px] font-bold text-slate-400">{d}</span>
+                    }
+                  </button>
                 );
               })}
             </div>
           </div>
-          <div className="mt-4 bg-slate-100 rounded-3xl p-5 text-center animate-scale-in">
-            <p className="font-display font-black text-lg text-black">Сегодня</p>
-            <p className="text-sm text-slate-500 mb-4">Как ты себя чувствуешь?</p>
-            <div className="flex justify-between px-2">
-              {MOODS.map((m, i) => (
-                <button key={i} onClick={() => setTodayMood(i)}
-                  className="w-14 h-14 rounded-full flex items-center justify-center text-2xl transition-all active:scale-90"
-                  style={{ background: m.bg, outline: todayMood === i ? '3px solid #000' : 'none', outlineOffset: '2px', transform: todayMood === i ? 'scale(1.1)' : 'scale(1)' }}>
-                  {m.emoji}
-                </button>
-              ))}
+
+          {/* Выбор настроения */}
+          <div className="mt-3 bg-slate-100 rounded-3xl p-4">
+            <p className="font-display font-bold text-base text-black text-center">
+              {pickingDay ? `${pickingDay} ${MONTHS[calMonth].toLowerCase()}` : 'Сегодня'}
+            </p>
+            <p className="text-sm text-slate-500 text-center mb-3">Как ты себя чувствуешь?</p>
+            <div className="flex justify-between gap-2">
+              {MOODS.map((m, i) => {
+                const currentMIdx = pickingDay ? dayMoods[moodKey(pickingDay)] : dayMoods[moodKey(today.getDate())];
+                const isActive = currentMIdx === i;
+                return (
+                  <button
+                    key={i}
+                    onClick={() => setDayMood(pickingDay ?? today.getDate(), i)}
+                    className="flex-1 aspect-square rounded-full overflow-hidden transition-all active:scale-90"
+                    style={{
+                      outline: isActive ? '3px solid #000' : 'none',
+                      outlineOffset: '2px',
+                      transform: isActive ? 'scale(1.08)' : 'scale(1)',
+                    }}
+                  >
+                    <img src={m.img} alt={m.label} className="w-full h-full object-cover" />
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
