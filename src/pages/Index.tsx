@@ -148,7 +148,7 @@ export default function Index() {
   const [myColorIdx, setMyColorIdx] = useState(0);
   const [editingName, setEditingName] = useState(false);
   const [nameInput, setNameInput] = useState('Глеб');
-  const [avatarStep, setAvatarStep] = useState<'face' | 'color'>('face');
+  const [avatarStep, setAvatarStep] = useState<'face' | 'color' | null>(null);
 
   // Календарь настроений
   const [calMonth, setCalMonth] = useState(1); // 0=январь … 11=декабрь (начинаем с февраля=1)
@@ -548,7 +548,14 @@ export default function Index() {
 
           {/* ── Превью аватара + имя ── */}
           <div className="mt-4 flex items-center gap-4">
-            <CompositeAvatar faceIdx={myFaceIdx} colorIdx={myColorIdx} size={72} />
+            {/* аватар — клик открывает всплывашку */}
+            <button onClick={() => setAvatarStep('face')}
+              className="relative active:scale-90 transition-transform shrink-0">
+              <CompositeAvatar faceIdx={myFaceIdx} colorIdx={myColorIdx} size={72} />
+              <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-white rounded-full border border-slate-200 shadow flex items-center justify-center">
+                <Icon name="Pencil" size={11} className="text-slate-500" />
+              </div>
+            </button>
             <div className="flex-1">
               {editingName ? (
                 <div className="flex gap-2 items-center">
@@ -567,63 +574,17 @@ export default function Index() {
                 </div>
               ) : (
                 <button onClick={() => { setNameInput(myName); setEditingName(true); }}
-                  className="flex items-center gap-2 group">
+                  className="flex items-center gap-2">
                   <span className="font-display font-black text-2xl text-black">{myName}</span>
                   <Icon name="Pencil" size={15} className="text-slate-400" />
                 </button>
               )}
-              <p className="text-xs text-slate-400 mt-0.5">Нажми на имя, чтобы изменить</p>
+              <p className="text-xs text-slate-400 mt-0.5">Нажми на аватар или имя, чтобы изменить</p>
             </div>
-          </div>
-
-          {/* ── Редактор аватара ── */}
-          <div className="mt-5 bg-slate-50 rounded-3xl p-4 border border-slate-100">
-            {/* Табы: Эмоция / Цвет */}
-            <div className="flex gap-2 mb-4">
-              {(['face', 'color'] as const).map(step => (
-                <button key={step} onClick={() => setAvatarStep(step)}
-                  className="flex-1 py-2 rounded-xl text-sm font-bold transition-all"
-                  style={{ background: avatarStep === step ? '#1e293b' : '#E2E8F0', color: avatarStep === step ? '#fff' : '#64748B' }}>
-                  {step === 'face' ? '😶 Эмоция' : '🎨 Цвет'}
-                </button>
-              ))}
-            </div>
-
-            {avatarStep === 'face' ? (
-              /* Выбор контура */
-              <div className="grid grid-cols-5 gap-2">
-                {AVATAR_FACES.map((f, i) => (
-                  <button key={f.id} onClick={() => setMyFaceIdx(i)}
-                    className="aspect-square rounded-2xl flex items-center justify-center transition-all active:scale-90 relative overflow-hidden"
-                    style={{
-                      background: AVATAR_COLORS[myColorIdx].color,
-                      outline: myFaceIdx === i ? '3px solid #1e293b' : '3px solid transparent',
-                      outlineOffset: '2px',
-                    }}>
-                    <img src={f.img} alt={f.label} style={{ width: '75%', height: '75%', objectFit: 'contain' }} />
-                  </button>
-                ))}
-              </div>
-            ) : (
-              /* Выбор цвета */
-              <div className="grid grid-cols-4 gap-3">
-                {AVATAR_COLORS.map((c, i) => (
-                  <button key={c.id} onClick={() => setMyColorIdx(i)}
-                    className="aspect-square rounded-2xl flex items-center justify-center transition-all active:scale-90 relative overflow-hidden"
-                    style={{
-                      background: c.color,
-                      outline: myColorIdx === i ? '3px solid #1e293b' : '3px solid transparent',
-                      outlineOffset: '2px',
-                    }}>
-                    <img src={AVATAR_FACES[myFaceIdx].img} alt="" style={{ width: '75%', height: '75%', objectFit: 'contain' }} />
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
 
           {/* ── Мой статус ── */}
-          <p className="mt-5 text-xs font-bold tracking-widest text-slate-400 uppercase">Мой статус</p>
+          <p className="mt-6 text-xs font-bold tracking-widest text-slate-400 uppercase">Мой статус</p>
           <div className="grid grid-cols-3 gap-2 mt-3">
             {STATUSES.map(s => {
               const active = status === s.id;
@@ -638,10 +599,22 @@ export default function Index() {
             })}
           </div>
 
-          {/* ── Остальные участники (только просмотр) ── */}
-          <p className="mt-5 text-xs font-bold tracking-widest text-slate-400 uppercase">Семья</p>
+          {/* ── Семья (Глеб первый с составным аватаром, остальные — просмотр) ── */}
+          <p className="mt-6 text-xs font-bold tracking-widest text-slate-400 uppercase">Семья</p>
           <div className="mt-3 bg-slate-100 rounded-3xl p-4 space-y-3">
-            {FAMILY.map((f, idx) => {
+            {/* Глеб — текущий пользователь */}
+            <div className="flex items-center gap-3">
+              <CompositeAvatar faceIdx={myFaceIdx} colorIdx={myColorIdx} size={44} />
+              <span className="font-semibold text-slate-700 flex-1">{myName}</span>
+              <span className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full"
+                style={{ background: (STATUSES.find(s => s.id === status)?.color ?? '#4FC3E8') + '22', color: STATUSES.find(s => s.id === status)?.color }}>
+                <Icon name={STATUSES.find(s => s.id === status)?.icon ?? 'House'} size={13} />
+                {STATUSES.find(s => s.id === status)?.label}
+              </span>
+            </div>
+            {/* Остальные — только просмотр, пропускаем Глеба (idx=0) */}
+            {FAMILY.slice(1).map((f, i) => {
+              const idx = i + 1;
               const st = STATUSES.find(s => s.id === f.status)!;
               return (
                 <div key={f.name} className="flex items-center gap-3">
@@ -656,6 +629,66 @@ export default function Index() {
             })}
           </div>
         </div>
+
+        {/* ── Всплывашка редактора аватара ── */}
+        {avatarStep !== null && (
+          <div className="absolute inset-0 bg-black/40 z-40 flex items-end" onClick={() => setAvatarStep(null)}>
+            <div className="w-full bg-white rounded-t-3xl p-5 pb-8 animate-fade-in" onClick={e => e.stopPropagation()}>
+              {/* Превью + закрыть */}
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <CompositeAvatar faceIdx={myFaceIdx} colorIdx={myColorIdx} size={52} />
+                  <span className="font-display font-black text-lg text-black">{myName}</span>
+                </div>
+                <button onClick={() => setAvatarStep(null)} className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center active:scale-90">
+                  <Icon name="X" size={18} className="text-slate-600" />
+                </button>
+              </div>
+
+              {/* Табы */}
+              <div className="flex gap-2 mb-4">
+                {(['face', 'color'] as const).map(step => (
+                  <button key={step} onClick={() => setAvatarStep(step)}
+                    className="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all"
+                    style={{ background: avatarStep === step ? '#1e293b' : '#F1F5F9', color: avatarStep === step ? '#fff' : '#64748B' }}>
+                    {step === 'face' ? 'Эмоция' : 'Цвет'}
+                  </button>
+                ))}
+              </div>
+
+              {avatarStep === 'face' ? (
+                <div className="grid grid-cols-5 gap-2">
+                  {AVATAR_FACES.map((f, i) => (
+                    <button key={f.id} onClick={() => setMyFaceIdx(i)}
+                      className="aspect-square rounded-2xl flex items-center justify-center transition-all active:scale-90 overflow-hidden"
+                      style={{
+                        background: AVATAR_COLORS[myColorIdx].color,
+                        outline: myFaceIdx === i ? '3px solid #1e293b' : '3px solid transparent',
+                        outlineOffset: '2px',
+                      }}>
+                      <img src={f.img} alt={f.label} style={{ width: '75%', height: '75%', objectFit: 'contain' }} />
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-4 gap-3">
+                  {AVATAR_COLORS.map((c, i) => (
+                    <button key={c.id} onClick={() => setMyColorIdx(i)}
+                      className="aspect-square rounded-2xl flex items-center justify-center transition-all active:scale-90 overflow-hidden"
+                      style={{
+                        background: c.color,
+                        outline: myColorIdx === i ? '3px solid #1e293b' : '3px solid transparent',
+                        outlineOffset: '2px',
+                      }}>
+                      <img src={AVATAR_FACES[myFaceIdx].img} alt="" style={{ width: '75%', height: '75%', objectFit: 'contain' }} />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         <BottomNav active="profile" onNav={go} />
       </Phone>
     );
