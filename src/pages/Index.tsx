@@ -143,6 +143,39 @@ export default function Index() {
   const [cardIndex, setCardIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
 
+  // Редактируемые события
+  const [events, setEvents] = useState(EVENTS);
+  const [showEventForm, setShowEventForm] = useState(false);
+  const [editingEventIdx, setEditingEventIdx] = useState<number | null>(null);
+  const EVENT_COLORS = ['#4FC3E8','#F4922B','#E63946','#C9A8DA'];
+  const [formTitle, setFormTitle] = useState('');
+  const [formDate, setFormDate] = useState('');
+  const [formColor, setFormColor] = useState(0);
+
+  const openNewEvent = () => {
+    setFormTitle(''); setFormDate(''); setFormColor(0);
+    setEditingEventIdx(null); setShowEventForm(true);
+  };
+  const openEditEvent = (idx: number) => {
+    const ev = events[idx];
+    setFormTitle(ev.title); setFormDate(ev.date); setFormColor(EVENT_COLORS.indexOf(ev.color));
+    setEditingEventIdx(idx); setShowEventForm(true);
+  };
+  const saveEvent = () => {
+    if (!formTitle.trim()) return;
+    const color = EVENT_COLORS[formColor] ?? '#4FC3E8';
+    if (editingEventIdx !== null) {
+      setEvents(prev => prev.map((e,i) => i === editingEventIdx ? { ...e, title: formTitle, date: formDate || e.date, color } : e));
+    } else {
+      setEvents(prev => [...prev, { id: prev.length, title: formTitle, date: formDate || 'скоро', sub: '', daysLeft: 0, color, emoji: '🎉', participants: [0,1,2,3] }]);
+    }
+    setShowEventForm(false);
+  };
+  const deleteEvent = (idx: number) => {
+    setEvents(prev => prev.filter((_,i) => i !== idx));
+    setShowEventForm(false);
+  };
+
   // Профиль пользователя (Глеб)
   const [myName, setMyName] = useState('Глеб');
   const [myFaceIdx, setMyFaceIdx] = useState(0);
@@ -408,57 +441,148 @@ export default function Index() {
   if (screen === 'eventsList')
     return (
       <Phone>
-        <div className="px-6 pt-16 pb-28">
+        <div className="px-6 pt-16 pb-28 overflow-y-auto">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-xs font-semibold tracking-widest text-slate-400 uppercase">Семья</p>
               <h1 className="font-display font-black text-3xl leading-tight text-black mt-0.5">Календарь<br />событий</h1>
             </div>
-            <button className="w-11 h-11 rounded-2xl bg-brand-blue flex items-center justify-center shadow-md active:scale-90 transition-transform mt-1">
+            <button onClick={openNewEvent} className="w-11 h-11 rounded-2xl bg-brand-blue flex items-center justify-center shadow-md active:scale-90 transition-transform mt-1">
               <Icon name="Plus" size={22} className="text-white" />
             </button>
           </div>
 
           <div className="mt-8 relative">
-            {/* вертикальная линия timeline */}
-            <div className="absolute left-[52px] top-3 bottom-3 w-[2px] bg-slate-200" />
+            {/* вертикальная линия */}
+            <div className="absolute left-[38px] top-3 bottom-3 w-[2px] bg-slate-200" />
 
-            <div className="space-y-5">
-              {EVENTS.map((ev, idx) => (
-                <button
-                  key={ev.id}
-                  onClick={() => { setSelectedEvent(idx); go('eventDetail'); }}
-                  className="w-full flex items-center gap-4 active:scale-[0.98] transition-transform"
-                >
-                  {/* дата + точка */}
+            <div className="space-y-4">
+              {events.map((ev, idx) => (
+                <div key={ev.id} className="flex items-center gap-3">
+                  {/* точка + дата */}
                   <div className="flex flex-col items-center w-[52px] shrink-0 relative z-10">
-                    <div className="w-5 h-5 rounded-full border-2 mb-1" style={{ borderColor: ev.color, background: idx === 0 ? ev.color : 'white' }} />
-                    <p className="font-black text-xl leading-none text-black">{ev.date.split(' ')[0]}</p>
-                    <p className="text-[11px] text-slate-500 font-medium">{ev.date.split(' ')[1]}</p>
-                    <p className="text-[10px] text-slate-400">{ev.sub}</p>
+                    <div className="w-[18px] h-[18px] rounded-full border-2 mb-1 bg-white" style={{ borderColor: ev.color }} />
+                    <p className="font-black text-base leading-none text-black">{ev.date.split(' ')[0]}</p>
+                    <p className="text-[10px] text-slate-500 font-medium">{ev.date.split(' ')[1]}</p>
+                    <p className="text-[9px] text-slate-400 leading-tight text-center">{ev.sub}</p>
                   </div>
-                  {/* карточка */}
-                  <div className="flex-1 rounded-2xl px-4 py-4 text-left text-white font-display font-bold text-lg leading-tight shadow-md" style={{ background: ev.color }}>
+                  {/* карточка с кнопкой редакт. */}
+                  <button
+                    onClick={() => { setSelectedEvent(idx); go('eventDetail'); }}
+                    className="flex-1 rounded-2xl px-4 py-4 text-left text-white font-display font-bold text-base leading-tight shadow-md active:scale-[0.98] transition-transform"
+                    style={{ background: ev.color }}
+                  >
                     {ev.title}
-                  </div>
-                </button>
+                  </button>
+                  <button
+                    onClick={() => openEditEvent(idx)}
+                    className="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center active:scale-90 transition-transform shrink-0"
+                  >
+                    <Icon name="Pencil" size={15} className="text-slate-500" />
+                  </button>
+                </div>
               ))}
             </div>
           </div>
         </div>
+
+        {/* ── Всплывашка создания/редактирования события ── */}
+        {showEventForm && (
+          <div className="absolute inset-0 bg-black/40 z-40 flex items-end" onClick={() => setShowEventForm(false)}>
+            <div className="w-full bg-white rounded-t-3xl p-6 pb-10 animate-fade-in" onClick={e => e.stopPropagation()}>
+              <div className="flex items-center justify-between mb-5">
+                <p className="font-display font-black text-xl text-black">
+                  {editingEventIdx !== null ? 'Редактировать' : 'Новое событие'}
+                </p>
+                <button onClick={() => setShowEventForm(false)} className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center active:scale-90">
+                  <Icon name="X" size={18} className="text-slate-600" />
+                </button>
+              </div>
+
+              {/* Название */}
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Название</p>
+              <input
+                value={formTitle}
+                onChange={e => setFormTitle(e.target.value)}
+                placeholder="Например: Пикник в парке"
+                className="w-full border-2 border-slate-200 rounded-2xl px-4 py-3 font-body text-base text-black outline-none focus:border-brand-blue mb-4"
+                maxLength={40}
+              />
+
+              {/* Дата */}
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Дата</p>
+              <input
+                value={formDate}
+                onChange={e => setFormDate(e.target.value)}
+                placeholder="Например: 15 мая"
+                className="w-full border-2 border-slate-200 rounded-2xl px-4 py-3 font-body text-base text-black outline-none focus:border-brand-blue mb-4"
+              />
+
+              {/* Цвет */}
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Цвет</p>
+              <div className="flex gap-3 mb-6">
+                {EVENT_COLORS.map((c, i) => (
+                  <button key={c} onClick={() => setFormColor(i)}
+                    className="w-10 h-10 rounded-full transition-all active:scale-90"
+                    style={{ background: c, outline: formColor === i ? '3px solid #1e293b' : '3px solid transparent', outlineOffset: '2px' }}
+                  />
+                ))}
+              </div>
+
+              <button onClick={saveEvent}
+                className="w-full py-4 rounded-2xl text-white font-display font-bold text-lg active:scale-95 transition-transform mb-3"
+                style={{ background: EVENT_COLORS[formColor] }}>
+                {editingEventIdx !== null ? 'Сохранить' : 'Создать событие'}
+              </button>
+
+              {editingEventIdx !== null && (
+                <button onClick={() => deleteEvent(editingEventIdx)}
+                  className="w-full py-3 rounded-2xl bg-slate-100 text-slate-500 font-display font-bold text-base active:scale-95 transition-transform">
+                  Удалить событие
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
         <BottomNav active="events" onNav={go} />
       </Phone>
     );
 
   /* ── EVENT DETAIL ── */
   if (screen === 'eventDetail') {
-    const ev = EVENTS[selectedEvent];
+    const ev = events[selectedEvent] ?? events[0];
     return (
       <Phone>
         <div className="relative h-full flex flex-col px-7 pt-16 pb-10">
-          <BackBtn onClick={() => go('eventsList')} />
-          <h1 className="font-display font-black text-3xl leading-[1.05] text-black mt-5">{ev.title}</h1>
+          <div className="flex items-center justify-between">
+            <BackBtn onClick={() => go('eventsList')} />
+            <button onClick={() => openEditEvent(selectedEvent)} className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center active:scale-90 transition-transform">
+              <Icon name="Pencil" size={16} className="text-slate-500" />
+            </button>
+          </div>
+          <h1 className="font-display font-black text-3xl leading-[1.05] text-black mt-4">{ev.title}</h1>
           <p className="text-slate-400 text-sm mt-1">{ev.date}</p>
+
+          {/* всплывашка формы внутри детали */}
+          {showEventForm && (
+            <div className="absolute inset-0 bg-black/40 z-40 flex items-end rounded-[38px] overflow-hidden" onClick={() => setShowEventForm(false)}>
+              <div className="w-full bg-white rounded-t-3xl p-6 pb-10 animate-fade-in" onClick={e => e.stopPropagation()}>
+                <div className="flex items-center justify-between mb-4">
+                  <p className="font-display font-black text-xl text-black">Редактировать</p>
+                  <button onClick={() => setShowEventForm(false)} className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center active:scale-90"><Icon name="X" size={18} className="text-slate-600" /></button>
+                </div>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Название</p>
+                <input value={formTitle} onChange={e => setFormTitle(e.target.value)} className="w-full border-2 border-slate-200 rounded-2xl px-4 py-3 font-body text-base text-black outline-none focus:border-brand-blue mb-4" maxLength={40} />
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Дата</p>
+                <input value={formDate} onChange={e => setFormDate(e.target.value)} placeholder="Например: 15 мая" className="w-full border-2 border-slate-200 rounded-2xl px-4 py-3 font-body text-base text-black outline-none focus:border-brand-blue mb-4" />
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Цвет</p>
+                <div className="flex gap-3 mb-6">{EVENT_COLORS.map((c,i) => <button key={c} onClick={() => setFormColor(i)} className="w-10 h-10 rounded-full active:scale-90" style={{ background: c, outline: formColor===i?'3px solid #1e293b':'3px solid transparent', outlineOffset:'2px' }} />)}</div>
+                <button onClick={saveEvent} className="w-full py-4 rounded-2xl text-white font-display font-bold text-lg active:scale-95 mb-3" style={{ background: EVENT_COLORS[formColor] }}>Сохранить</button>
+                <button onClick={() => { deleteEvent(selectedEvent); go('eventsList'); }} className="w-full py-3 rounded-2xl bg-slate-100 text-slate-500 font-display font-bold text-base active:scale-95">Удалить событие</button>
+              </div>
+            </div>
+          )}
 
           <div className="mt-6">
             <p className="text-slate-500 text-sm font-medium">Осталось</p>
