@@ -469,14 +469,29 @@ export default function Index() {
       <Phone>
         <div className="relative h-full flex flex-col px-7 pt-14 pb-10">
           <BackBtn onClick={() => go('home')} />
-          <div className="flex-1 flex flex-col">
+
+          <h1 className="font-display font-black text-[28px] leading-tight text-black mt-5">Игра<br />«Не все дома»</h1>
+          <p className="mt-2 text-slate-400 text-sm leading-snug">
+            Игра для семьи, которая сближает,<br />веселит и помогает узнать друг друга<br />ещё лучше.
+          </p>
+
+          {/* Картинка по центру */}
+          <div className="flex-1 flex items-center justify-center py-4">
             <img
-              src="https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/f8763ba7-7557-4ec1-af52-be8a1cd30862.png"
-              alt="Игра Не все дома"
-              className="w-full flex-1 object-contain object-center mt-2"
+              src="https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/16187e64-1865-4873-a59f-3722dec9aeec.png"
+              alt="Карточки игры"
+              className="w-full max-w-[300px] object-contain"
             />
           </div>
-          <button onClick={() => { setCardIndex(0); go('gamePlay'); }} className="w-full py-4 rounded-2xl bg-brand-blue text-white font-display font-bold text-lg shadow-lg active:scale-95 transition-transform mt-4">
+
+          {/* Три пункта */}
+          <div className="space-y-4 mb-8">
+            <Feat color="#4FC3E8" text="Более 120 обновляющихся карточек" />
+            <Feat color="#C9A8DA" text="От 11 лет" />
+            <Feat color="#F4922B" text="Смех и яркие моменты" />
+          </div>
+
+          <button onClick={() => { setCardIndex(0); go('gamePlay'); }} className="w-full py-4 rounded-2xl bg-brand-blue text-white font-display font-bold text-lg shadow-lg active:scale-95 transition-transform">
             Собрать игроков
           </button>
         </div>
@@ -803,11 +818,11 @@ const GameCard = ({ rot, x, bg, label, q }: { rot: number; x: number; bg: string
 
 const BottomNav = ({ active, onNav }: { active: string; onNav: (s: Screen) => void }) => {
   const items = [
-    { id: 'home', label: 'Главная', icon: 'House', screen: 'home' as Screen },
-    { id: 'mood', label: 'Настроение', icon: 'Heart', screen: 'moodMain' as Screen },
-    { id: 'cards', label: 'Карточки', icon: 'Layers', screen: 'gameIntro' as Screen },
-    { id: 'events', label: 'События', icon: 'Calendar', screen: 'eventsList' as Screen },
-    { id: 'profile', label: 'Профиль', icon: 'Smile', screen: 'profile' as Screen },
+    { id: 'home',    label: 'Главная',    icon: 'House',     screen: 'home' as Screen },
+    { id: 'mood',    label: 'Настроение', icon: 'Heart',     screen: 'moodIntro' as Screen },
+    { id: 'cards',   label: 'Карточки',   icon: 'Layers',    screen: 'gameIntro' as Screen },
+    { id: 'events',  label: 'События',    icon: 'Calendar',  screen: 'eventsIntro' as Screen },
+    { id: 'profile', label: 'Профиль',    icon: 'Smile',     screen: 'profile' as Screen },
   ];
   return (
     <div className="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t border-slate-100 px-2 pt-2 pb-4 flex justify-around">
