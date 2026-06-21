@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Icon from '@/components/ui/icon';
 
-type Screen = 'welcome' | 'home' | 'moodIntro' | 'moodMain' | 'gameIntro';
+type Screen = 'welcome' | 'home' | 'moodIntro' | 'moodMain' | 'gameIntro' | 'profile';
 
 const MOODS = [
   { emoji: '😡', bg: '#E63946', label: 'Злюсь' },
@@ -35,6 +35,32 @@ const Blob = ({ color, className }: { color: string; className: string }) => (
   <div className={`absolute rounded-full blur-[1px] ${className}`} style={{ background: color }} />
 );
 
+/* Графика приветственного экрана: красный полукруг, гирлянда флажков, синий персонаж */
+const WelcomeArt = () => (
+  <div className="relative w-full h-[230px] shrink-0 overflow-hidden">
+    {/* красный полукруг */}
+    <div className="absolute -top-24 right-6 w-56 h-56 rounded-full bg-brand-red" />
+    {/* синий персонаж */}
+    <div className="absolute top-16 right-3 w-[88px] h-[88px] rounded-full bg-brand-blue flex items-center justify-center animate-float shadow-lg z-10">
+      <svg width="56" height="40" viewBox="0 0 56 40" fill="none">
+        <circle cx="14" cy="11" r="5" fill="#0E1116" />
+        <circle cx="42" cy="11" r="5" fill="#0E1116" />
+        <path d="M8 20 Q28 42 48 20" stroke="#0E1116" strokeWidth="6" strokeLinecap="round" fill="none" />
+      </svg>
+    </div>
+    {/* гирлянда из чёрных флажков */}
+    <svg className="absolute top-2 left-6 w-[210px] h-[70px]" viewBox="0 0 210 70" fill="none">
+      <path d="M2 6 Q70 34 140 14 T206 22" stroke="#0E1116" strokeWidth="3" fill="none" strokeLinecap="round" />
+      <g fill="#0E1116">
+        <path d="M30 13 l26 -2 l-10 20 z" />
+        <path d="M68 14 l26 0 l-12 20 z" />
+        <path d="M108 11 l26 2 l-14 19 z" />
+        <path d="M150 15 l24 3 l-15 18 z" />
+      </g>
+    </svg>
+  </div>
+);
+
 export default function Index() {
   const [screen, setScreen] = useState<Screen>('welcome');
   const [status, setStatus] = useState('home');
@@ -46,27 +72,26 @@ export default function Index() {
   if (screen === 'welcome')
     return (
       <Phone>
-        <div className="relative h-full flex flex-col px-7 pt-20 pb-10">
-          <Blob color="#E63946" className="w-44 h-44 -top-6 right-2 animate-float" />
-          <Blob color="#4FC3E8" className="w-24 h-24 top-24 -right-4 animate-float" />
-          <div className="absolute top-10 left-8 text-4xl animate-wiggle">🚩</div>
-          <div className="absolute top-28 right-10 text-3xl animate-float">😄</div>
+        <div className="relative h-full flex flex-col">
+          <WelcomeArt />
 
-          <div className="flex-1 flex flex-col justify-center -mt-10">
-            <h1 className="font-display font-bold text-[64px] leading-[0.92] tracking-tight text-black animate-fade-in">
+          <div className="relative z-10 flex-1 flex flex-col justify-center px-9 -mt-4">
+            <h1 className="font-display font-bold text-[68px] leading-[0.9] tracking-tight text-black animate-fade-in">
               НЕ<br />ВСЕ<br />ДОМА
             </h1>
-            <p className="mt-5 text-slate-500 text-lg leading-snug animate-fade-in" style={{ animationDelay: '0.15s', opacity: 0 }}>
+            <p className="mt-5 text-slate-500 text-base leading-snug animate-fade-in" style={{ animationDelay: '0.15s', opacity: 0 }}>
               место, где семья<br />всегда на одной волне
             </p>
           </div>
 
-          <button
-            onClick={() => go('home')}
-            className="w-full py-4 rounded-2xl bg-brand-blue text-white font-display font-semibold text-lg tracking-wide shadow-lg active:scale-95 transition-transform"
-          >
-            Привет, семья!
-          </button>
+          <div className="relative z-10 px-7 pb-10">
+            <button
+              onClick={() => go('home')}
+              className="w-full py-4 rounded-2xl bg-brand-blue text-white font-display font-semibold text-lg tracking-wide shadow-lg active:scale-95 transition-transform"
+            >
+              Привет, семья!
+            </button>
+          </div>
         </div>
       </Phone>
     );
@@ -79,8 +104,8 @@ export default function Index() {
           <p className="text-xs font-semibold tracking-widest text-slate-400 uppercase">Добро пожаловать</p>
           <h1 className="font-display font-bold text-5xl leading-[0.9] text-black mt-1">НЕ ВСЕ<br />ДОМА</h1>
 
-          <div className="mt-6 bg-slate-100 rounded-3xl p-5 animate-scale-in">
-            <p className="text-xs text-slate-400">Сегодня 21 марта 2026</p>
+          <div className="mt-6 bg-white rounded-3xl p-5 border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.06)] animate-scale-in">
+            <p className="text-xs text-slate-400">Сегодня <span className="font-semibold text-slate-500">21 марта 2026</span></p>
             <p className="font-display font-bold text-2xl text-black mt-1">Суббота!</p>
             <p className="text-sm text-slate-500">Отличный день для игры с семьёй</p>
             <button
@@ -91,52 +116,13 @@ export default function Index() {
             </button>
           </div>
 
-          {/* Статусы присутствия */}
-          <p className="mt-7 text-xs font-bold tracking-widest text-slate-400 uppercase">Я сейчас</p>
-          <div className="grid grid-cols-3 gap-2 mt-3">
-            {STATUSES.map((s) => {
-              const active = status === s.id;
-              return (
-                <button
-                  key={s.id}
-                  onClick={() => setStatus(s.id)}
-                  className="rounded-2xl py-3 flex flex-col items-center gap-1 transition-all active:scale-95"
-                  style={{
-                    background: active ? s.color : '#F1F5F9',
-                    color: active ? '#fff' : '#64748B',
-                  }}
-                >
-                  <Icon name={s.icon} size={22} />
-                  <span className="text-xs font-semibold">{s.label}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Кто где */}
-          <div className="mt-3 bg-slate-100 rounded-3xl p-4 space-y-2">
-            {FAMILY.map((f) => {
-              const st = STATUSES.find((s) => s.id === f.status)!;
-              return (
-                <div key={f.name} className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-xl shadow-sm">{f.avatar}</div>
-                  <span className="font-semibold text-slate-700 flex-1">{f.name}</span>
-                  <span className="flex items-center gap-1 text-xs font-semibold px-3 py-1 rounded-full" style={{ background: st.color + '22', color: st.color }}>
-                    <Icon name={st.icon} size={13} />
-                    {st.label}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-
           {/* Разделы */}
           <p className="mt-7 text-xs font-bold tracking-widest text-slate-400 uppercase">Разделы</p>
           <div className="grid grid-cols-2 gap-3 mt-3">
             <Tile color="#4FC3E8" icon="Heart" title="Настроение" sub="История настроений" onClick={() => go('moodIntro')} />
             <Tile color="#C9A8DA" icon="Layers" title="Карточки" sub="Вопросы для семьи" onClick={() => go('gameIntro')} />
             <Tile color="#F4922B" icon="Calendar" title="События" sub="Планы и мероприятия" />
-            <Tile color="#E63946" icon="Smile" title="Профиль" sub="Члена семьи" />
+            <Tile color="#E63946" icon="Smile" title="Профиль" sub="Члена семьи" onClick={() => go('profile')} />
           </div>
         </div>
         <BottomNav active="home" onNav={go} />
@@ -238,6 +224,53 @@ export default function Index() {
     );
   }
 
+  /* ---------- PROFILE (статусы присутствия) ---------- */
+  if (screen === 'profile')
+    return (
+      <Phone>
+        <div className="px-6 pt-16 pb-28">
+          <BackBtn onClick={() => go('home')} />
+          <h1 className="font-display font-bold text-4xl leading-[0.95] text-black mt-5">Профиль<br />семьи</h1>
+
+          <p className="mt-6 text-xs font-bold tracking-widest text-slate-400 uppercase">Мой статус</p>
+          <div className="grid grid-cols-3 gap-2 mt-3">
+            {STATUSES.map((s) => {
+              const active = status === s.id;
+              return (
+                <button
+                  key={s.id}
+                  onClick={() => setStatus(s.id)}
+                  className="rounded-2xl py-4 flex flex-col items-center gap-1.5 transition-all active:scale-95"
+                  style={{ background: active ? s.color : '#F1F5F9', color: active ? '#fff' : '#64748B' }}
+                >
+                  <Icon name={s.icon} size={24} />
+                  <span className="text-xs font-semibold">{s.label}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          <p className="mt-7 text-xs font-bold tracking-widest text-slate-400 uppercase">Кто где сейчас</p>
+          <div className="mt-3 bg-slate-100 rounded-3xl p-4 space-y-3">
+            {FAMILY.map((f) => {
+              const st = STATUSES.find((s) => s.id === f.status)!;
+              return (
+                <div key={f.name} className="flex items-center gap-3">
+                  <div className="w-11 h-11 rounded-full bg-white flex items-center justify-center text-xl shadow-sm">{f.avatar}</div>
+                  <span className="font-semibold text-slate-700 flex-1">{f.name}</span>
+                  <span className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: st.color + '22', color: st.color }}>
+                    <Icon name={st.icon} size={13} />
+                    {st.label}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        <BottomNav active="profile" onNav={go} />
+      </Phone>
+    );
+
   /* ---------- GAME INTRO ---------- */
   return (
     <Phone>
@@ -319,7 +352,7 @@ const BottomNav = ({ active, onNav }: { active: string; onNav: (s: Screen) => vo
     { id: 'mood', label: 'Настроение', icon: 'Heart', screen: 'moodMain' as Screen },
     { id: 'cards', label: 'Карточки', icon: 'Layers', screen: 'gameIntro' as Screen },
     { id: 'events', label: 'События', icon: 'Calendar', screen: 'home' as Screen },
-    { id: 'profile', label: 'Профиль', icon: 'Smile', screen: 'home' as Screen },
+    { id: 'profile', label: 'Профиль', icon: 'Smile', screen: 'profile' as Screen },
   ];
   return (
     <div className="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t border-slate-100 px-2 pt-2 pb-4 flex justify-around">
