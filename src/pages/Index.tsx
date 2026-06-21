@@ -462,8 +462,6 @@ export default function Index() {
 
           {/* Timeline */}
           <div className="relative">
-            {/* вертикальная линия — точно под кружками */}
-            <div className="absolute left-[28px] top-4 bottom-4 w-[2px] bg-slate-200" />
 
             <div className="space-y-3">
               {events.map((ev, idx) => (
