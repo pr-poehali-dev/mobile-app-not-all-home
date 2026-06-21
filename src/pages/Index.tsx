@@ -242,27 +242,33 @@ export default function Index() {
 
             {/* Дни */}
             <div className="grid grid-cols-7 gap-[3px]">
-              {/* пустые ячейки до первого числа */}
               {Array.from({ length: firstDow }).map((_, i) => <div key={`e${i}`} />)}
               {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(d => {
                 const mIdx = dayMoods[moodKey(d)];
                 const mood = mIdx !== undefined ? MOODS[mIdx] : null;
                 const isTod = isToday(d);
+                const isPicking = pickingDay === d;
                 return (
                   <button
                     key={d}
-                    onClick={() => setPickingDay(pickingDay === d ? null : d)}
-                    className="aspect-square rounded-full flex items-center justify-center relative overflow-hidden transition-transform active:scale-90"
+                    onClick={() => setPickingDay(isPicking ? null : d)}
+                    onDoubleClick={() => {
+                      setDayMoods(prev => { const n = { ...prev }; delete n[moodKey(d)]; return n; });
+                      setPickingDay(null);
+                    }}
+                    className="flex flex-col items-center justify-center py-[3px] rounded-xl transition-transform active:scale-90"
                     style={{
-                      background: mood ? mood.bg : '#e2e8f0',
-                      outline: pickingDay === d ? '2px solid #000' : isTod ? '2px solid #64748B' : 'none',
-                      outlineOffset: '1px',
+                      background: isPicking ? '#1e293b' : isTod ? '#e0f2fe' : 'transparent',
                     }}
                   >
-                    {mood
-                      ? <img src={mood.img} alt={mood.label} className="w-full h-full object-cover" />
-                      : <span className="text-[10px] font-bold text-slate-400">{d}</span>
-                    }
+                    {/* число */}
+                    <span className="text-[10px] font-bold leading-none" style={{ color: isPicking ? '#fff' : isTod ? '#0369a1' : '#475569' }}>
+                      {d}
+                    </span>
+                    {/* иконка настроения или пустой кружок */}
+                    <div className="w-[22px] h-[22px] mt-[2px] rounded-full overflow-hidden flex items-center justify-center" style={{ background: mood ? 'transparent' : '#cbd5e1' }}>
+                      {mood && <img src={mood.img} alt={mood.label} className="w-full h-full object-cover" />}
+                    </div>
                   </button>
                 );
               })}
