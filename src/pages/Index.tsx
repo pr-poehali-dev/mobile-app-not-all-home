@@ -114,16 +114,15 @@ export default function Index() {
     return (
       <Phone>
         <div className="relative h-full flex flex-col">
-          <WelcomeArt />
-          <div className="relative z-10 flex-1 flex flex-col justify-center px-9 -mt-4">
-            <h1 className="font-display font-black text-[68px] leading-[0.9] tracking-tight text-black animate-fade-in">
-              НЕ<br />ВСЕ<br />ДОМА
-            </h1>
-            <p className="mt-5 text-slate-500 text-base leading-snug animate-fade-in" style={{ animationDelay: '0.15s', opacity: 0 }}>
-              место, где семья<br />всегда на одной волне
-            </p>
+          {/* картинка занимает всё пространство кроме кнопки */}
+          <div className="flex-1 relative">
+            <img
+              src="https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/172ef8dd-1748-4ec5-b5cc-2dab9c84b037.jpg"
+              alt="Не все дома"
+              className="w-full h-full object-cover object-top"
+            />
           </div>
-          <div className="relative z-10 px-7 pb-10">
+          <div className="relative z-10 px-7 pb-10 pt-4 bg-white">
             <button onClick={() => go('home')} className="w-full py-4 rounded-2xl bg-brand-blue text-white font-display font-bold text-lg shadow-lg active:scale-95 transition-transform">
               Привет, семья!
             </button>
