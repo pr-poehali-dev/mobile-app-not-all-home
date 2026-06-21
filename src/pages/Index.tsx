@@ -163,18 +163,19 @@ export default function Index() {
   if (screen === 'moodIntro')
     return (
       <Phone>
-        <div className="relative h-full flex flex-col px-7 pt-14 pb-10">
-          <BackBtn onClick={() => go('home')} />
-          <div className="flex-1 flex flex-col">
+        <div className="relative h-full flex flex-col">
+          <div className="flex-1 overflow-hidden">
             <img
-              src="https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/66c71652-28a3-44f5-b518-199f3a091827.png"
+              src="https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/a2828b0c-5e9c-4a76-a45f-6176ccfc269b.png"
               alt="Трекер настроений"
-              className="w-full flex-1 object-contain object-center mt-2"
+              className="w-full h-full object-cover object-top"
             />
           </div>
-          <button onClick={() => go('moodMain')} className="w-full py-4 rounded-2xl bg-brand-orange text-white font-display font-bold text-lg shadow-lg active:scale-95 transition-transform mt-4">
-            Начать отслеживать
-          </button>
+          <div className="px-7 pb-10 pt-4 bg-white">
+            <button onClick={() => go('moodMain')} className="w-full py-4 rounded-2xl bg-brand-orange text-white font-display font-bold text-lg shadow-lg active:scale-95 transition-transform">
+              Начать отслеживать
+            </button>
+          </div>
         </div>
       </Phone>
     );
@@ -231,18 +232,19 @@ export default function Index() {
   if (screen === 'eventsIntro')
     return (
       <Phone>
-        <div className="relative h-full flex flex-col px-7 pt-14 pb-10">
-          <BackBtn onClick={() => go('home')} />
-          <div className="flex-1 flex flex-col">
+        <div className="relative h-full flex flex-col">
+          <div className="flex-1 overflow-hidden">
             <img
-              src="https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/82275ec0-4782-4c94-b564-3de847da1ac6.png"
+              src="https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/b73a94ac-cd41-44bd-b436-21036720a9f1.png"
               alt="События семьи"
-              className="w-full flex-1 object-contain object-center mt-2"
+              className="w-full h-full object-cover object-top"
             />
           </div>
-          <button onClick={() => go('eventsList')} className="w-full py-4 rounded-2xl font-display font-bold text-lg shadow-lg active:scale-95 transition-transform text-white mt-4" style={{ background: '#F4922B' }}>
-            Открыть календарь
-          </button>
+          <div className="px-7 pb-10 pt-4 bg-white">
+            <button onClick={() => go('eventsList')} className="w-full py-4 rounded-2xl font-display font-bold text-lg shadow-lg active:scale-95 transition-transform text-white" style={{ background: '#F4922B' }}>
+              Спланировать
+            </button>
+          </div>
         </div>
       </Phone>
     );
@@ -353,77 +355,72 @@ export default function Index() {
 
   /* ── GAME PLAY ── */
   if (screen === 'gamePlay') {
-    const card = CARDS[cardIndex];
-    const total = CARDS.length;
-    const cardColors: Record<string, string> = {
-      'ОТГАДАЙКА': '#4FC3E8',
-      'СИТУАЦИЯ': '#F4922B',
-      'ВОПРОС': '#C9A8DA',
-      'ЗАДАНИЕ': '#E63946',
-    };
-    const cardColor = cardColors[card.type] || '#4FC3E8';
+    const total = 120;
 
     return (
       <Phone>
-        <div className="flex flex-col h-full px-6 pt-16 pb-6">
-          <p className="text-xs text-slate-400 font-medium mb-1">{cardIndex + 1} из {total}</p>
-          <h1 className="font-display font-black text-2xl text-black">Карточная игра</h1>
-
-          {/* прогресс */}
-          <div className="flex gap-1 mt-3 mb-6">
-            {CARDS.map((_, i) => (
-              <div key={i} className="h-1 flex-1 rounded-full transition-all" style={{ background: i <= cardIndex ? cardColor : '#E2E8F0' }} />
-            ))}
-          </div>
-
-          {/* карточка */}
-          <div className="flex-1 flex flex-col items-center justify-start">
-            <div className="w-full rounded-3xl shadow-xl overflow-hidden" style={{ background: 'white', border: '2px solid #F1F5F9' }}>
-              {/* тип */}
-              <div className="rounded-t-3xl px-5 py-3 flex items-center gap-2" style={{ background: cardColor }}>
-                <span className="font-display font-black text-white text-sm tracking-wide">{card.type}</span>
-              </div>
-              {/* текст */}
-              <div className="px-5 pt-4 pb-2 min-h-[90px]">
-                <p className="font-display font-bold text-lg text-black text-center leading-snug">{card.question}</p>
-              </div>
-              {/* персонаж */}
-              <div className="flex justify-center pb-2">
-                <CardCharacter />
-              </div>
-              {/* подсказка */}
-              <p className="text-center text-slate-400 text-sm pb-4 font-medium">Подумай и ответь!</p>
+        <div className="flex flex-col h-full bg-white">
+          {/* шапка */}
+          <div className="px-6 pt-14 pb-3">
+            <p className="text-xs text-slate-400 font-medium">{cardIndex + 1} из {total}</p>
+            <h1 className="font-display font-black text-2xl text-black mt-0.5">Карточная игра</h1>
+            {/* прогресс-бар: тонкие сегменты */}
+            <div className="flex gap-[3px] mt-3">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="h-[3px] flex-1 rounded-full transition-all"
+                  style={{ background: i === 0 ? '#4FC3E8' : '#E2E8F0' }}
+                />
+              ))}
             </div>
           </div>
 
-          {/* кнопки */}
-          <div className="flex gap-3 mt-4">
-            <button
-              onClick={() => setCardIndex(Math.max(0, cardIndex - 1))}
-              className="flex-1 py-3.5 rounded-2xl bg-slate-100 text-slate-600 font-display font-bold text-base active:scale-95 transition-transform"
-            >
-              Назад
-            </button>
-            <button
-              onClick={() => setFlipped(!flipped)}
-              className="w-14 h-14 rounded-2xl flex items-center justify-center active:scale-90 transition-transform shadow-md"
-              style={{ background: cardColor }}
-            >
-              <Icon name="RefreshCw" size={22} className="text-white" />
-            </button>
-            <button
-              onClick={() => {
-                if (cardIndex < total - 1) setCardIndex(cardIndex + 1);
-                else go('gameIntro');
-              }}
-              className="flex-1 py-3.5 rounded-2xl text-white font-display font-bold text-base active:scale-95 transition-transform shadow-md"
-              style={{ background: '#E63946' }}
-            >
-              Далее
-            </button>
+          {/* карточка */}
+          <div className="flex-1 px-5 flex flex-col">
+            <div className="flex-1 bg-slate-50 rounded-3xl overflow-hidden flex flex-col shadow-sm border border-slate-100">
+              {/* картинка-карточка с персонажем */}
+              <img
+                src="https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/9fa3ff89-9964-4a30-ac84-cb4b4690058e.jpg"
+                alt="Карточка"
+                className="w-full flex-1 object-cover object-top"
+              />
+            </div>
+            {/* подпись под карточкой */}
+            <p className="text-center text-slate-500 text-base font-medium mt-4 mb-2">Подумай и ответь!</p>
           </div>
+
+          {/* кнопки */}
+          <div className="px-5 pb-6 pt-2">
+            <div className="flex gap-3 items-center">
+              <button
+                onClick={() => setCardIndex(Math.max(0, cardIndex - 1))}
+                className="flex-1 py-4 rounded-2xl bg-slate-100 text-slate-700 font-display font-bold text-base active:scale-95 transition-transform"
+              >
+                Назад
+              </button>
+              <button
+                onClick={() => setFlipped(!flipped)}
+                className="w-14 h-14 rounded-2xl flex items-center justify-center active:scale-90 transition-transform shadow-md shrink-0"
+                style={{ background: '#4FC3E8' }}
+              >
+                <Icon name="RefreshCw" size={22} className="text-white" />
+              </button>
+              <button
+                onClick={() => {
+                  if (cardIndex < CARDS.length - 1) setCardIndex(cardIndex + 1);
+                  else go('gameIntro');
+                }}
+                className="flex-1 py-4 rounded-2xl text-white font-display font-bold text-base active:scale-95 transition-transform shadow-md"
+                style={{ background: '#E63946' }}
+              >
+                Далее
+              </button>
+            </div>
+          </div>
+
+          <BottomNav active="cards" onNav={go} />
         </div>
-        <BottomNav active="cards" onNav={go} />
       </Phone>
     );
   }
