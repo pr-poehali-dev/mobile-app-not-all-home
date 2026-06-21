@@ -19,8 +19,8 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				display: ['Oswald', 'sans-serif'],
-				body: ['Rubik', 'sans-serif'],
+				display: ['Golos Text', 'sans-serif'],
+				body: ['Golos Text', 'sans-serif'],
 			},
 			colors: {
 				brand: {
