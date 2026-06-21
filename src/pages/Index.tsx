@@ -846,40 +846,40 @@ export default function Index() {
           </div>
 
           {/* ── Карточка ── */}
-          <div className="flex-1 px-5 pb-2 flex flex-col min-h-0">
+          <div className="px-5 shrink-0">
             <div
-              className="flex-1 rounded-3xl overflow-hidden flex flex-col shadow-md border border-slate-100 animate-scale-in"
+              className="rounded-3xl overflow-visible flex flex-col shadow-md border border-slate-100 animate-scale-in relative"
               style={{ animationDelay: '0.1s', opacity: 0, background: '#FAFAFA' }}
             >
-              {/* Категория — картинка-пузырь */}
+              {/* Категория — новый пузырь */}
               <div className="shrink-0 pt-3 px-3">
                 <img
-                  src={card.categoryImg}
+                  src="https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/bb4b1f41-4dfc-4596-80f0-bed5c54428a3.png"
                   alt={card.type}
-                  className="h-14 object-contain object-left"
+                  className="h-12 object-contain object-left"
                 />
               </div>
 
-              {/* Вопрос по центру */}
-              <div className="flex-1 flex items-center justify-center px-5 py-2">
-                <p className="font-display font-black text-[18px] text-black text-center leading-snug">
+              {/* Вопрос */}
+              <div className="px-5 pt-2 pb-3">
+                <p className="font-display font-black text-[17px] text-black text-center leading-snug">
                   {card.question}
                 </p>
               </div>
 
-              {/* Иллюстрация снизу */}
-              <div className="shrink-0 flex justify-center pb-2 px-4">
+              {/* Иллюстрация — большая, выходит за нижний край */}
+              <div className="flex justify-center overflow-visible pb-0">
                 <img
                   src={card.illustration}
                   alt="иллюстрация"
-                  className="h-[130px] object-contain animate-float"
+                  className="h-[190px] object-contain animate-float relative translate-y-8"
                 />
               </div>
             </div>
           </div>
 
           {/* ── Подпись ── */}
-          <p className="text-center text-slate-400 text-sm font-medium shrink-0 animate-fade-in" style={{ animationDelay: '0.25s', opacity: 0 }}>
+          <p className="text-center text-slate-400 text-sm font-medium shrink-0 mt-10 animate-fade-in" style={{ animationDelay: '0.25s', opacity: 0 }}>
             Подумай и ответь!
           </p>
 
