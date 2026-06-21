@@ -609,7 +609,7 @@ export default function Index() {
             <button onClick={() => setShowInvite(true)}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 active:scale-90 transition-transform">
               <Icon name="UserPlus" size={14} className="text-slate-600" />
-              <span className="text-xs font-bold text-slate-600">Добавить</span>
+              <span className="text-xs text-slate-600 font-semibold">Добавить</span>
             </button>
           </div>
           <div className="mt-3 bg-slate-100 rounded-3xl p-4 space-y-3">
