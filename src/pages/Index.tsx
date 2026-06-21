@@ -235,19 +235,33 @@ export default function Index() {
   if (screen === 'moodIntro')
     return (
       <Phone>
-        <div className="relative h-full flex flex-col">
-          <div className="flex-1 overflow-hidden">
+        <div className="relative h-full flex flex-col px-7 pt-14 pb-10">
+          <BackBtn onClick={() => go('home')} />
+
+          <h1 className="font-display font-black text-[28px] leading-tight text-black mt-5">Трекер<br />настроений</h1>
+          <p className="mt-2 text-slate-400 text-sm leading-snug">
+            Отмечайте настроение каждый день<br />и следите за эмоциональной<br />атмосферой в семье.
+          </p>
+
+          {/* Картинка по центру */}
+          <div className="flex-1 flex items-center justify-center py-4">
             <img
-              src="https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/a2828b0c-5e9c-4a76-a45f-6176ccfc269b.png"
-              alt="Трекер настроений"
-              className="w-full h-full object-cover object-top"
+              src="https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/3d2a4a8a-2c6d-4db7-90ef-d47da37b0145.jpg"
+              alt="Настроения"
+              className="w-full max-w-[300px] object-contain"
             />
           </div>
-          <div className="px-7 pb-10 pt-4 bg-white">
-            <button onClick={() => go('moodMain')} className="w-full py-4 rounded-2xl bg-brand-orange text-white font-display font-bold text-lg shadow-lg active:scale-95 transition-transform">
-              Начать отслеживать
-            </button>
+
+          {/* Три пункта */}
+          <div className="space-y-4 mb-8">
+            <Feat color="#4FC3E8" text="Статистика по дням и неделям" />
+            <Feat color="#C9A8DA" text="Видно настроение каждого" />
+            <Feat color="#F4922B" text="Поддержка близких" />
           </div>
+
+          <button onClick={() => go('moodMain')} className="w-full py-4 rounded-2xl bg-brand-orange text-white font-display font-bold text-lg shadow-lg active:scale-95 transition-transform">
+            Начать отслеживать
+          </button>
         </div>
       </Phone>
     );
