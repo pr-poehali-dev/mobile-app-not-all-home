@@ -152,22 +152,29 @@ export default function Index() {
   const [formDate, setFormDate] = useState('');
   const [formColor, setFormColor] = useState(0);
 
+  const [formParticipants, setFormParticipants] = useState<number[]>([0,1,2,3]);
+
+  const toggleParticipant = (idx: number) =>
+    setFormParticipants(prev => prev.includes(idx) ? prev.filter(i => i !== idx) : [...prev, idx]);
+
   const openNewEvent = () => {
-    setFormTitle(''); setFormDate(''); setFormColor(0);
+    setFormTitle(''); setFormDate(''); setFormColor(0); setFormParticipants([0,1,2,3]);
     setEditingEventIdx(null); setShowEventForm(true);
   };
   const openEditEvent = (idx: number) => {
     const ev = events[idx];
-    setFormTitle(ev.title); setFormDate(ev.date); setFormColor(EVENT_COLORS.indexOf(ev.color));
+    setFormTitle(ev.title); setFormDate(ev.date);
+    setFormColor(EVENT_COLORS.indexOf(ev.color) >= 0 ? EVENT_COLORS.indexOf(ev.color) : 0);
+    setFormParticipants([...ev.participants]);
     setEditingEventIdx(idx); setShowEventForm(true);
   };
   const saveEvent = () => {
     if (!formTitle.trim()) return;
     const color = EVENT_COLORS[formColor] ?? '#4FC3E8';
     if (editingEventIdx !== null) {
-      setEvents(prev => prev.map((e,i) => i === editingEventIdx ? { ...e, title: formTitle, date: formDate || e.date, color } : e));
+      setEvents(prev => prev.map((e,i) => i === editingEventIdx ? { ...e, title: formTitle, date: formDate || e.date, color, participants: formParticipants } : e));
     } else {
-      setEvents(prev => [...prev, { id: prev.length, title: formTitle, date: formDate || 'скоро', sub: '', daysLeft: 0, color, emoji: '🎉', participants: [0,1,2,3] }]);
+      setEvents(prev => [...prev, { id: prev.length, title: formTitle, date: formDate || 'скоро', sub: '', daysLeft: 0, color, emoji: '🎉', participants: formParticipants }]);
     }
     setShowEventForm(false);
   };
@@ -441,8 +448,9 @@ export default function Index() {
   if (screen === 'eventsList')
     return (
       <Phone>
-        <div className="px-6 pt-16 pb-28 overflow-y-auto">
-          <div className="flex items-start justify-between">
+        <div className="px-5 pt-16 pb-28 overflow-y-auto">
+          {/* Шапка */}
+          <div className="flex items-start justify-between mb-6">
             <div>
               <p className="text-xs font-semibold tracking-widest text-slate-400 uppercase">Семья</p>
               <h1 className="font-display font-black text-3xl leading-tight text-black mt-0.5">Календарь<br />событий</h1>
@@ -452,45 +460,49 @@ export default function Index() {
             </button>
           </div>
 
-          <div className="mt-8 relative">
-            {/* вертикальная линия */}
-            <div className="absolute left-[38px] top-3 bottom-3 w-[2px] bg-slate-200" />
+          {/* Timeline */}
+          <div className="relative">
+            {/* вертикальная линия — точно под кружками */}
+            <div className="absolute left-[28px] top-4 bottom-4 w-[2px] bg-slate-200" />
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               {events.map((ev, idx) => (
-                <div key={ev.id} className="flex items-center gap-3">
-                  {/* точка + дата */}
-                  <div className="flex flex-col items-center w-[52px] shrink-0 relative z-10">
-                    <div className="w-[18px] h-[18px] rounded-full border-2 mb-1 bg-white" style={{ borderColor: ev.color }} />
-                    <p className="font-black text-base leading-none text-black">{ev.date.split(' ')[0]}</p>
-                    <p className="text-[10px] text-slate-500 font-medium">{ev.date.split(' ')[1]}</p>
-                    <p className="text-[9px] text-slate-400 leading-tight text-center">{ev.sub}</p>
+                <div key={ev.id} className="flex gap-0">
+                  {/* Левая колонка: кружок + дата */}
+                  <div className="flex flex-col items-center shrink-0 w-[58px] relative z-10 pt-3">
+                    <div className="w-[18px] h-[18px] rounded-full border-[3px] bg-white mb-1" style={{ borderColor: ev.color }} />
+                    <span className="font-display font-black text-[17px] leading-none text-black">{ev.date.split(' ')[0]}</span>
+                    <span className="text-[11px] text-slate-500 font-medium leading-tight">{ev.date.split(' ')[1]}</span>
+                    <span className="text-[10px] text-slate-400 leading-tight text-center mt-0.5">{ev.sub}</span>
                   </div>
-                  {/* карточка с кнопкой редакт. */}
-                  <button
-                    onClick={() => { setSelectedEvent(idx); go('eventDetail'); }}
-                    className="flex-1 rounded-2xl px-4 py-4 text-left text-white font-display font-bold text-base leading-tight shadow-md active:scale-[0.98] transition-transform"
-                    style={{ background: ev.color }}
-                  >
-                    {ev.title}
-                  </button>
-                  <button
-                    onClick={() => openEditEvent(idx)}
-                    className="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center active:scale-90 transition-transform shrink-0"
-                  >
-                    <Icon name="Pencil" size={15} className="text-slate-500" />
-                  </button>
+
+                  {/* Правая колонка: карточка */}
+                  <div className="flex-1 flex items-start gap-2 pt-1">
+                    <button
+                      onClick={() => { setSelectedEvent(idx); go('eventDetail'); }}
+                      className="flex-1 rounded-2xl px-4 py-[14px] text-left text-white font-display font-bold text-[16px] leading-snug shadow-sm active:scale-[0.98] transition-transform"
+                      style={{ background: ev.color, minHeight: 64 }}
+                    >
+                      {ev.title}
+                    </button>
+                    <button
+                      onClick={() => openEditEvent(idx)}
+                      className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center active:scale-90 transition-transform mt-1 shrink-0"
+                    >
+                      <Icon name="Pencil" size={13} className="text-slate-400" />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
         </div>
 
-        {/* ── Всплывашка создания/редактирования события ── */}
+        {/* ── Всплывашка создания/редактирования ── */}
         {showEventForm && (
           <div className="absolute inset-0 bg-black/40 z-40 flex items-end" onClick={() => setShowEventForm(false)}>
-            <div className="w-full bg-white rounded-t-3xl p-6 pb-10 animate-fade-in" onClick={e => e.stopPropagation()}>
-              <div className="flex items-center justify-between mb-5">
+            <div className="w-full bg-white rounded-t-3xl px-6 pt-5 pb-10 animate-fade-in overflow-y-auto max-h-[90%]" onClick={e => e.stopPropagation()}>
+              <div className="flex items-center justify-between mb-4">
                 <p className="font-display font-black text-xl text-black">
                   {editingEventIdx !== null ? 'Редактировать' : 'Новое событие'}
                 </p>
@@ -499,42 +511,45 @@ export default function Index() {
                 </button>
               </div>
 
-              {/* Название */}
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Название</p>
-              <input
-                value={formTitle}
-                onChange={e => setFormTitle(e.target.value)}
-                placeholder="Например: Пикник в парке"
-                className="w-full border-2 border-slate-200 rounded-2xl px-4 py-3 font-body text-base text-black outline-none focus:border-brand-blue mb-4"
-                maxLength={40}
-              />
+              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Название</p>
+              <input value={formTitle} onChange={e => setFormTitle(e.target.value)} placeholder="Например: Пикник в парке"
+                className="w-full border-2 border-slate-200 rounded-2xl px-4 py-3 font-body text-base text-black outline-none focus:border-brand-blue mb-3" maxLength={40} />
 
-              {/* Дата */}
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Дата</p>
-              <input
-                value={formDate}
-                onChange={e => setFormDate(e.target.value)}
-                placeholder="Например: 15 мая"
-                className="w-full border-2 border-slate-200 rounded-2xl px-4 py-3 font-body text-base text-black outline-none focus:border-brand-blue mb-4"
-              />
+              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Дата</p>
+              <input value={formDate} onChange={e => setFormDate(e.target.value)} placeholder="Например: 15 мая"
+                className="w-full border-2 border-slate-200 rounded-2xl px-4 py-3 font-body text-base text-black outline-none focus:border-brand-blue mb-3" />
 
-              {/* Цвет */}
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Цвет</p>
-              <div className="flex gap-3 mb-6">
+              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2">Цвет</p>
+              <div className="flex gap-3 mb-4">
                 {EVENT_COLORS.map((c, i) => (
-                  <button key={c} onClick={() => setFormColor(i)}
-                    className="w-10 h-10 rounded-full transition-all active:scale-90"
-                    style={{ background: c, outline: formColor === i ? '3px solid #1e293b' : '3px solid transparent', outlineOffset: '2px' }}
-                  />
+                  <button key={c} onClick={() => setFormColor(i)} className="w-10 h-10 rounded-full active:scale-90 transition-all"
+                    style={{ background: c, outline: formColor === i ? '3px solid #1e293b' : '3px solid transparent', outlineOffset: '2px' }} />
                 ))}
               </div>
 
-              <button onClick={saveEvent}
-                className="w-full py-4 rounded-2xl text-white font-display font-bold text-lg active:scale-95 transition-transform mb-3"
+              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2">Участники</p>
+              <div className="flex gap-3 mb-5">
+                {FAMILY.map((f, i) => {
+                  const selected = formParticipants.includes(i);
+                  return (
+                    <button key={f.name} onClick={() => toggleParticipant(i)}
+                      className="relative active:scale-90 transition-all"
+                      style={{ opacity: selected ? 1 : 0.35 }}>
+                      <FamilyAvatar idx={i} size={44} />
+                      {selected && (
+                        <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-brand-blue border-2 border-white flex items-center justify-center">
+                          <Icon name="Check" size={10} className="text-white" />
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <button onClick={saveEvent} className="w-full py-4 rounded-2xl text-white font-display font-bold text-lg active:scale-95 transition-transform mb-3"
                 style={{ background: EVENT_COLORS[formColor] }}>
                 {editingEventIdx !== null ? 'Сохранить' : 'Создать событие'}
               </button>
-
               {editingEventIdx !== null && (
                 <button onClick={() => deleteEvent(editingEventIdx)}
                   className="w-full py-3 rounded-2xl bg-slate-100 text-slate-500 font-display font-bold text-base active:scale-95 transition-transform">
