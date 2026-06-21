@@ -46,6 +46,33 @@ const CARDS = [
   { type: 'ВОПРОС', question: 'Если бы ты мог стать животным на один день — кем?' },
 ];
 
+/* ─── составные аватары: контуры (PNG с прозрачным фоном) ── */
+const AVATAR_FACES = [
+  { id: 'smile',   img: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/d26ff1fe-c835-4cc5-9e88-c0d6c01ee803.png', label: 'Радость' },
+  { id: 'skate',   img: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/872375e9-4ab1-489f-bde0-1e2a4a293d23.png', label: 'Скейт' },
+  { id: 'wow',     img: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/e353cf4a-6d50-4388-975b-8a3c2ba55275.png', label: 'Удивление' },
+  { id: 'happy',   img: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/48d1ef12-c3a6-4741-adda-8a5451e03dcc.png', label: 'Смех' },
+  { id: 'angry',   img: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/41aaac28-aee6-4f31-9b1e-8cce6d6354f8.png', label: 'Дерзость' },
+];
+
+const AVATAR_COLORS = [
+  { id: 'blue',   color: '#4FC3E8', label: 'Голубой' },
+  { id: 'orange', color: '#F4922B', label: 'Оранжевый' },
+  { id: 'purple', color: '#C9A8DA', label: 'Фиолетовый' },
+  { id: 'red',    color: '#E63946', label: 'Красный' },
+];
+
+/* Составной аватар: цветной круг + контур поверх */
+const CompositeAvatar = ({ faceIdx, colorIdx, size = 48 }: { faceIdx: number; colorIdx: number; size?: number }) => (
+  <div style={{ width: size, height: size, borderRadius: '50%', background: AVATAR_COLORS[colorIdx].color, position: 'relative', overflow: 'hidden', flexShrink: 0 }}>
+    <img
+      src={AVATAR_FACES[faceIdx].img}
+      alt=""
+      style={{ position: 'absolute', inset: '8%', width: '84%', height: '84%', objectFit: 'contain' }}
+    />
+  </div>
+);
+
 /* ─── обёртка телефона ───────────────────────────────── */
 const Phone = ({ children }: { children: React.ReactNode }) => (
   <div className="min-h-screen w-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center p-4 font-body">
@@ -114,6 +141,14 @@ export default function Index() {
   const [selectedEvent, setSelectedEvent] = useState(0);
   const [cardIndex, setCardIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
+
+  // Профиль пользователя (Глеб)
+  const [myName, setMyName] = useState('Глеб');
+  const [myFaceIdx, setMyFaceIdx] = useState(0);
+  const [myColorIdx, setMyColorIdx] = useState(0);
+  const [editingName, setEditingName] = useState(false);
+  const [nameInput, setNameInput] = useState('Глеб');
+  const [avatarStep, setAvatarStep] = useState<'face' | 'color'>('face');
 
   // Календарь настроений
   const [calMonth, setCalMonth] = useState(1); // 0=январь … 11=декабрь (начинаем с февраля=1)
@@ -507,11 +542,88 @@ export default function Index() {
   if (screen === 'profile')
     return (
       <Phone>
-        <div className="px-6 pt-16 pb-28">
+        <div className="px-6 pt-14 pb-28 overflow-y-auto">
           <BackBtn onClick={() => go('home')} />
-          <h1 className="font-display font-black text-4xl leading-[0.95] text-black mt-5">Профиль<br />семьи</h1>
+          <h1 className="font-display font-black text-3xl leading-tight text-black mt-4">Мой профиль</h1>
 
-          <p className="mt-6 text-xs font-bold tracking-widest text-slate-400 uppercase">Мой статус</p>
+          {/* ── Превью аватара + имя ── */}
+          <div className="mt-4 flex items-center gap-4">
+            <CompositeAvatar faceIdx={myFaceIdx} colorIdx={myColorIdx} size={72} />
+            <div className="flex-1">
+              {editingName ? (
+                <div className="flex gap-2 items-center">
+                  <input
+                    autoFocus
+                    value={nameInput}
+                    onChange={e => setNameInput(e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Enter') { setMyName(nameInput.trim() || myName); setEditingName(false); } }}
+                    className="flex-1 border-2 border-brand-blue rounded-xl px-3 py-2 font-display font-bold text-xl text-black outline-none"
+                    maxLength={14}
+                  />
+                  <button onClick={() => { setMyName(nameInput.trim() || myName); setEditingName(false); }}
+                    className="w-9 h-9 rounded-xl bg-brand-blue flex items-center justify-center active:scale-90 transition-transform shrink-0">
+                    <Icon name="Check" size={16} className="text-white" />
+                  </button>
+                </div>
+              ) : (
+                <button onClick={() => { setNameInput(myName); setEditingName(true); }}
+                  className="flex items-center gap-2 group">
+                  <span className="font-display font-black text-2xl text-black">{myName}</span>
+                  <Icon name="Pencil" size={15} className="text-slate-400" />
+                </button>
+              )}
+              <p className="text-xs text-slate-400 mt-0.5">Нажми на имя, чтобы изменить</p>
+            </div>
+          </div>
+
+          {/* ── Редактор аватара ── */}
+          <div className="mt-5 bg-slate-50 rounded-3xl p-4 border border-slate-100">
+            {/* Табы: Эмоция / Цвет */}
+            <div className="flex gap-2 mb-4">
+              {(['face', 'color'] as const).map(step => (
+                <button key={step} onClick={() => setAvatarStep(step)}
+                  className="flex-1 py-2 rounded-xl text-sm font-bold transition-all"
+                  style={{ background: avatarStep === step ? '#1e293b' : '#E2E8F0', color: avatarStep === step ? '#fff' : '#64748B' }}>
+                  {step === 'face' ? '😶 Эмоция' : '🎨 Цвет'}
+                </button>
+              ))}
+            </div>
+
+            {avatarStep === 'face' ? (
+              /* Выбор контура */
+              <div className="grid grid-cols-5 gap-2">
+                {AVATAR_FACES.map((f, i) => (
+                  <button key={f.id} onClick={() => setMyFaceIdx(i)}
+                    className="aspect-square rounded-2xl flex items-center justify-center transition-all active:scale-90 relative overflow-hidden"
+                    style={{
+                      background: AVATAR_COLORS[myColorIdx].color,
+                      outline: myFaceIdx === i ? '3px solid #1e293b' : '3px solid transparent',
+                      outlineOffset: '2px',
+                    }}>
+                    <img src={f.img} alt={f.label} style={{ width: '75%', height: '75%', objectFit: 'contain' }} />
+                  </button>
+                ))}
+              </div>
+            ) : (
+              /* Выбор цвета */
+              <div className="grid grid-cols-4 gap-3">
+                {AVATAR_COLORS.map((c, i) => (
+                  <button key={c.id} onClick={() => setMyColorIdx(i)}
+                    className="aspect-square rounded-2xl flex items-center justify-center transition-all active:scale-90 relative overflow-hidden"
+                    style={{
+                      background: c.color,
+                      outline: myColorIdx === i ? '3px solid #1e293b' : '3px solid transparent',
+                      outlineOffset: '2px',
+                    }}>
+                    <img src={AVATAR_FACES[myFaceIdx].img} alt="" style={{ width: '75%', height: '75%', objectFit: 'contain' }} />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* ── Мой статус ── */}
+          <p className="mt-5 text-xs font-bold tracking-widest text-slate-400 uppercase">Мой статус</p>
           <div className="grid grid-cols-3 gap-2 mt-3">
             {STATUSES.map(s => {
               const active = status === s.id;
@@ -526,7 +638,8 @@ export default function Index() {
             })}
           </div>
 
-          <p className="mt-7 text-xs font-bold tracking-widest text-slate-400 uppercase">Кто где сейчас</p>
+          {/* ── Остальные участники (только просмотр) ── */}
+          <p className="mt-5 text-xs font-bold tracking-widest text-slate-400 uppercase">Семья</p>
           <div className="mt-3 bg-slate-100 rounded-3xl p-4 space-y-3">
             {FAMILY.map((f, idx) => {
               const st = STATUSES.find(s => s.id === f.status)!;
