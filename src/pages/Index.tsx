@@ -38,13 +38,51 @@ const EVENTS = [
   { id: 3, title: 'Поездка на море',    date: '12 апр', sub: 'через 20 дней', daysLeft: 20, color: '#C9A8DA', emoji: '🏖️', participants: [0,1,2,3] },
 ];
 
+/* categoryBubble — пузырь с названием категории (PNG)
+   illustration — иллюстрация внутри карточки (PNG) */
 const CARDS = [
-  { type: 'ОТГАДАЙКА', question: 'Переведите с английского слово «Skateboard»' },
-  { type: 'СИТУАЦИЯ', question: 'Что бы вы сделали, если бы нашли 1000 рублей на улице?' },
-  { type: 'ВОПРОС', question: 'Какой твой самый яркий семейный момент?' },
-  { type: 'ЗАДАНИЕ', question: 'Изобрази любимое блюдо без слов — остальные угадывают!' },
-  { type: 'ОТГАДАЙКА', question: 'Как называется страна, где родился Карлсон?' },
-  { type: 'ВОПРОС', question: 'Если бы ты мог стать животным на один день — кем?' },
+  {
+    type: 'ОТГАДАЙКА',
+    question: 'Переведите с английского слово «Skateboard»',
+    categoryImg: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/ef726b90-4aa5-409f-9577-30493e4e4929.jpg',
+    illustration: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/76ae919e-44cf-43ad-bbd5-cbf3187dc1f5.png',
+    color: '#4FC3E8',
+  },
+  {
+    type: 'СИТУАЦИЯ',
+    question: 'Что бы вы сделали, если бы нашли 1000 рублей на улице?',
+    categoryImg: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/ef726b90-4aa5-409f-9577-30493e4e4929.jpg',
+    illustration: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/1662741b-084a-407b-b57a-6709bfb9311c.png',
+    color: '#F4922B',
+  },
+  {
+    type: 'ВОПРОС',
+    question: 'Какой твой самый яркий семейный момент?',
+    categoryImg: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/ef726b90-4aa5-409f-9577-30493e4e4929.jpg',
+    illustration: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/fc1a1b98-4b6d-4c91-bdbe-a828f78287b1.png',
+    color: '#C9A8DA',
+  },
+  {
+    type: 'ЗАДАНИЕ',
+    question: 'Изобрази любимое блюдо без слов — остальные угадывают!',
+    categoryImg: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/ef726b90-4aa5-409f-9577-30493e4e4929.jpg',
+    illustration: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/16187e64-1865-4873-a59f-3722dec9aeec.png',
+    color: '#E63946',
+  },
+  {
+    type: 'ОТГАДАЙКА',
+    question: 'Как называется страна, где родился Карлсон?',
+    categoryImg: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/ef726b90-4aa5-409f-9577-30493e4e4929.jpg',
+    illustration: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/76ae919e-44cf-43ad-bbd5-cbf3187dc1f5.png',
+    color: '#4FC3E8',
+  },
+  {
+    type: 'ВОПРОС',
+    question: 'Если бы ты мог стать животным на один день — кем?',
+    categoryImg: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/ef726b90-4aa5-409f-9577-30493e4e4929.jpg',
+    illustration: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/1662741b-084a-407b-b57a-6709bfb9311c.png',
+    color: '#C9A8DA',
+  },
 ];
 
 /* ─── составные аватары: контуры (PNG с прозрачным фоном) ── */
@@ -142,6 +180,7 @@ export default function Index() {
   const [selectedEvent, setSelectedEvent] = useState(0);
   const [cardIndex, setCardIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
+  const [currentPlayerIdx, setCurrentPlayerIdx] = useState(0); // чей ход
 
   // Редактируемые события
   const [events, setEvents] = useState(EVENTS);
@@ -752,65 +791,113 @@ export default function Index() {
 
   /* ── GAME PLAY ── */
   if (screen === 'gamePlay') {
-    const total = 120;
+    const total = CARDS.length;
+    const card = CARDS[cardIndex];
+    const currentPlayer = FAMILY[currentPlayerIdx % FAMILY.length];
+
+    const nextCard = () => {
+      const next = cardIndex < total - 1 ? cardIndex + 1 : 0;
+      setCardIndex(next);
+      setCurrentPlayerIdx(prev => (prev + 1) % FAMILY.length);
+      setFlipped(false);
+    };
+    const prevCard = () => {
+      setCardIndex(Math.max(0, cardIndex - 1));
+      setFlipped(false);
+    };
 
     return (
       <Phone>
-        <div className="flex flex-col h-full bg-white">
-          {/* шапка */}
-          <div className="px-6 pt-14 pb-3">
-            <p className="text-xs text-slate-400 font-medium animate-fade-in">{cardIndex + 1} из {total}</p>
-            <h1 className="font-display font-black text-2xl text-black mt-0.5 animate-fade-in" style={{ animationDelay: '0.05s', opacity: 0 }}>Карточная игра</h1>
-            {/* прогресс-бар: тонкие сегменты */}
-            <div className="flex gap-[3px] mt-3">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="h-[3px] flex-1 rounded-full transition-all"
-                  style={{ background: i === 0 ? '#4FC3E8' : '#E2E8F0' }}
-                />
+        <div className="flex flex-col h-full bg-white overflow-hidden">
+
+          {/* ── Шапка: счётчик + прогресс ── */}
+          <div className="px-5 pt-14 pb-2 shrink-0">
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-slate-400 font-medium animate-fade-in">{cardIndex + 1} из {total}</p>
+              <p className="text-xs font-bold text-slate-400 animate-fade-in">Карточная игра</p>
+            </div>
+            <div className="flex gap-[3px] mt-2">
+              {CARDS.map((_, i) => (
+                <div key={i} className="h-[3px] flex-1 rounded-full transition-all duration-300"
+                  style={{ background: i <= cardIndex ? card.color : '#E2E8F0' }} />
               ))}
             </div>
           </div>
 
-          {/* карточка */}
-          <div className="flex-1 px-5 flex flex-col">
-            <div className="flex-1 bg-slate-50 rounded-3xl overflow-hidden flex flex-col shadow-sm border border-slate-100 animate-scale-in" style={{ animationDelay: '0.1s', opacity: 0 }}>
-              {/* картинка-карточка с персонажем */}
-              <img
-                src="https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/9fa3ff89-9964-4a30-ac84-cb4b4690058e.jpg"
-                alt="Карточка"
-                className="w-full flex-1 object-cover object-top"
-              />
+          {/* ── Чей ход ── */}
+          <div className="px-5 py-2 shrink-0 animate-fade-in" style={{ animationDelay: '0.05s', opacity: 0 }}>
+            <div className="flex items-center gap-2 bg-slate-50 rounded-2xl px-3 py-2">
+              <div className="w-8 h-8 rounded-full overflow-hidden shrink-0">
+                <img src={currentPlayer.img} alt={currentPlayer.name} className="w-full h-full object-cover" />
+              </div>
+              <div className="flex-1">
+                <p className="text-[11px] text-slate-400 font-medium leading-none">Ход игрока</p>
+                <p className="font-display font-black text-sm text-black leading-tight">{currentPlayer.name}</p>
+              </div>
+              {/* остальные участники */}
+              <div className="flex -space-x-2">
+                {FAMILY.filter((_, i) => i !== currentPlayerIdx % FAMILY.length).map((f, i) => (
+                  <div key={i} className="w-7 h-7 rounded-full overflow-hidden border-2 border-white opacity-40">
+                    <img src={f.img} alt={f.name} className="w-full h-full object-cover" />
+                  </div>
+                ))}
+              </div>
             </div>
-            {/* подпись под карточкой */}
-            <p className="text-center text-slate-500 text-base font-medium mt-4 mb-2 animate-fade-in" style={{ animationDelay: '0.25s', opacity: 0 }}>Подумай и ответь!</p>
           </div>
 
-          {/* кнопки */}
-          <div className="px-5 pb-6 pt-2">
-            <div className="flex gap-3 items-center">
-              <button
-                onClick={() => setCardIndex(Math.max(0, cardIndex - 1))}
-                className="flex-1 py-4 rounded-2xl bg-slate-100 text-slate-700 font-display font-bold text-base active:scale-95 transition-transform"
-              >
+          {/* ── Карточка ── */}
+          <div className="flex-1 px-5 pb-2 flex flex-col min-h-0">
+            <div
+              className="flex-1 rounded-3xl overflow-hidden flex flex-col shadow-md border border-slate-100 animate-scale-in"
+              style={{ animationDelay: '0.1s', opacity: 0, background: '#FAFAFA' }}
+            >
+              {/* Категория — картинка-пузырь */}
+              <div className="shrink-0 pt-3 px-3">
+                <img
+                  src={card.categoryImg}
+                  alt={card.type}
+                  className="h-14 object-contain object-left"
+                />
+              </div>
+
+              {/* Вопрос по центру */}
+              <div className="flex-1 flex items-center justify-center px-5 py-2">
+                <p className="font-display font-black text-[18px] text-black text-center leading-snug">
+                  {card.question}
+                </p>
+              </div>
+
+              {/* Иллюстрация снизу */}
+              <div className="shrink-0 flex justify-center pb-2 px-4">
+                <img
+                  src={card.illustration}
+                  alt="иллюстрация"
+                  className="h-[130px] object-contain animate-float"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* ── Подпись ── */}
+          <p className="text-center text-slate-400 text-sm font-medium shrink-0 animate-fade-in" style={{ animationDelay: '0.25s', opacity: 0 }}>
+            Подумай и ответь!
+          </p>
+
+          {/* ── Кнопки ── */}
+          <div className="px-5 pt-3 pb-5 shrink-0">
+            <div className="flex gap-2 items-center">
+              <button onClick={prevCard}
+                className="flex-1 py-4 rounded-2xl bg-slate-100 text-slate-700 font-display font-bold text-base active:scale-95 transition-transform">
                 Назад
               </button>
-              <button
-                onClick={() => setFlipped(!flipped)}
+              <button onClick={() => setFlipped(!flipped)}
                 className="w-14 h-14 rounded-2xl flex items-center justify-center active:scale-90 transition-transform shadow-md shrink-0"
-                style={{ background: '#4FC3E8' }}
-              >
+                style={{ background: card.color }}>
                 <Icon name="RefreshCw" size={22} className="text-white" />
               </button>
-              <button
-                onClick={() => {
-                  if (cardIndex < CARDS.length - 1) setCardIndex(cardIndex + 1);
-                  else go('gameIntro');
-                }}
+              <button onClick={nextCard}
                 className="flex-1 py-4 rounded-2xl text-white font-display font-bold text-base active:scale-95 transition-transform shadow-md"
-                style={{ background: '#E63946' }}
-              >
+                style={{ background: '#E63946' }}>
                 Далее
               </button>
             </div>
