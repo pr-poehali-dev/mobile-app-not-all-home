@@ -38,50 +38,49 @@ const EVENTS = [
   { id: 3, title: 'Поездка на море',    date: '12 апр', sub: 'через 20 дней', daysLeft: 20, color: '#C9A8DA', emoji: '🏖️', participants: [0,1,2,3] },
 ];
 
-/* categoryBubble — пузырь с названием категории (PNG)
-   illustration — иллюстрация внутри карточки (PNG) */
+/* type → label/color. illustration уникальна для каждой карточки */
+const CARD_TYPES: Record<string, { label: string; color: string }> = {
+  'ОТГАДАЙКА':  { label: 'ОТГАДАЙКА',  color: '#4FC3E8' },
+  'ОБЪЯСНЯЙКА': { label: 'ОБЪЯСНЯЙКА', color: '#F4922B' },
+  'ВЫПОЛНЯЙКА': { label: 'ВЫПОЛНЯЙКА', color: '#E63946' },
+  'СУПЕР-КАРТА':{ label: 'СУПЕР-КАРТА',color: '#C9A8DA' },
+};
+
 const CARDS = [
   {
     type: 'ОТГАДАЙКА',
     question: 'Переведите с английского слово «Skateboard»',
-    categoryImg: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/ef726b90-4aa5-409f-9577-30493e4e4929.jpg',
-    illustration: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/76ae919e-44cf-43ad-bbd5-cbf3187dc1f5.png',
-    color: '#4FC3E8',
+    answer: 'Скейтборд',
+    illustration: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/0a02eb53-6593-401d-aefc-5a0064701ce2.png',
+    illustrationAlign: 'right' as const,
   },
   {
-    type: 'СИТУАЦИЯ',
-    question: 'Что бы вы сделали, если бы нашли 1000 рублей на улице?',
-    categoryImg: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/ef726b90-4aa5-409f-9577-30493e4e4929.jpg',
-    illustration: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/1662741b-084a-407b-b57a-6709bfb9311c.png',
-    color: '#F4922B',
-  },
-  {
-    type: 'ВОПРОС',
-    question: 'Какой твой самый яркий семейный момент?',
-    categoryImg: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/ef726b90-4aa5-409f-9577-30493e4e4929.jpg',
-    illustration: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/fc1a1b98-4b6d-4c91-bdbe-a828f78287b1.png',
-    color: '#C9A8DA',
-  },
-  {
-    type: 'ЗАДАНИЕ',
-    question: 'Изобрази любимое блюдо без слов — остальные угадывают!',
-    categoryImg: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/ef726b90-4aa5-409f-9577-30493e4e4929.jpg',
-    illustration: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/16187e64-1865-4873-a59f-3722dec9aeec.png',
-    color: '#E63946',
+    type: 'СУПЕР-КАРТА',
+    question: 'Какое заклинание зажигает огонёк на конце палочки в произведениях о Гарри Поттере?',
+    answer: 'Люмос',
+    illustration: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/d4db5926-002c-44d9-9142-b3d6e442edcd.png',
+    illustrationAlign: 'left' as const,
   },
   {
     type: 'ОТГАДАЙКА',
-    question: 'Как называется страна, где родился Карлсон?',
-    categoryImg: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/ef726b90-4aa5-409f-9577-30493e4e4929.jpg',
-    illustration: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/76ae919e-44cf-43ad-bbd5-cbf3187dc1f5.png',
-    color: '#4FC3E8',
+    question: 'Как называется головной убор полицейского?',
+    answer: 'Фуражка',
+    illustration: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/7b53fe3f-5128-4233-98a3-be1ff65d0efa.png',
+    illustrationAlign: 'right' as const,
   },
   {
-    type: 'ВОПРОС',
-    question: 'Если бы ты мог стать животным на один день — кем?',
-    categoryImg: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/ef726b90-4aa5-409f-9577-30493e4e4929.jpg',
-    illustration: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/1662741b-084a-407b-b57a-6709bfb9311c.png',
-    color: '#C9A8DA',
+    type: 'ВЫПОЛНЯЙКА',
+    question: 'Пантомима! Изобрази заданное действие, не говоря ни слова',
+    answer: 'Наступить на конструктор',
+    illustration: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/e2bd9ce7-bfdd-4152-91f2-2fe9b774793b.png',
+    illustrationAlign: 'left' as const,
+  },
+  {
+    type: 'ОБЪЯСНЯЙКА',
+    question: 'Объясни фразу, используя только слова на букву «К»',
+    answer: 'Оперное пение',
+    illustration: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/1aa129a4-e192-461c-a652-916c96752b01.png',
+    illustrationAlign: 'right' as const,
   },
 ];
 
@@ -793,6 +792,7 @@ export default function Index() {
   if (screen === 'gamePlay') {
     const total = CARDS.length;
     const card = CARDS[cardIndex];
+    const cardMeta = CARD_TYPES[card.type] ?? { label: card.type, color: '#4FC3E8' };
     const currentPlayer = FAMILY[currentPlayerIdx % FAMILY.length];
 
     const nextCard = () => {
@@ -819,7 +819,7 @@ export default function Index() {
             <div className="flex gap-[3px] mt-2">
               {CARDS.map((_, i) => (
                 <div key={i} className="h-[3px] flex-1 rounded-full transition-all duration-300"
-                  style={{ background: i <= cardIndex ? card.color : '#E2E8F0' }} />
+                  style={{ background: i <= cardIndex ? cardMeta.color : '#E2E8F0' }} />
               ))}
             </div>
           </div>
@@ -848,40 +848,55 @@ export default function Index() {
           {/* ── Карточка ── */}
           <div className="px-5 shrink-0">
             <div
-              className="rounded-3xl overflow-visible flex flex-col shadow-md border border-slate-100 animate-scale-in relative"
-              style={{ animationDelay: '0.1s', opacity: 0, background: '#FAFAFA' }}
+              className="rounded-3xl overflow-visible flex flex-col shadow-md animate-scale-in relative"
+              style={{ animationDelay: '0.1s', opacity: 0, background: '#FAFAFA', border: `2px solid ${cardMeta.color}22` }}
             >
-              {/* Категория — новый пузырь */}
-              <div className="shrink-0 pt-3 px-3">
-                <img
-                  src="https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/bb4b1f41-4dfc-4596-80f0-bed5c54428a3.png"
-                  alt={card.type}
-                  className="h-12 object-contain object-left"
-                />
+              {/* Лейбл категории — текст в цветной таблетке */}
+              <div className="pt-4 px-5">
+                <span
+                  className="inline-block px-4 py-1.5 rounded-full font-display font-black text-sm text-white"
+                  style={{ background: cardMeta.color }}
+                >
+                  {cardMeta.label}
+                </span>
               </div>
 
               {/* Вопрос */}
-              <div className="px-5 pt-2 pb-3">
-                <p className="font-display font-black text-[17px] text-black text-center leading-snug">
+              <div className="px-5 pt-3 pb-4">
+                <p className="font-display font-black text-[18px] text-black leading-snug">
                   {card.question}
                 </p>
               </div>
 
-              {/* Иллюстрация — большая, выходит за нижний край */}
-              <div className="flex justify-center overflow-visible pb-0">
+              {/* Иллюстрация — большая, выходит за карточку, выровнена по стороне */}
+              <div
+                className={`flex overflow-visible pb-0 ${card.illustrationAlign === 'right' ? 'justify-end pr-2' : 'justify-start pl-2'}`}
+              >
                 <img
                   src={card.illustration}
-                  alt="иллюстрация"
-                  className="h-[190px] object-contain animate-float relative translate-y-8"
+                  alt=""
+                  className="h-[200px] w-auto object-contain animate-float relative translate-y-10"
+                  style={{ transform: 'translateY(2.5rem)' }}
                 />
               </div>
             </div>
           </div>
 
+          {/* ── Ответ (показывается после нажатия ротации) ── */}
+          {flipped && (
+            <div className="mx-5 mt-12 bg-white rounded-2xl border-2 px-4 py-3 animate-pop shrink-0"
+              style={{ borderColor: cardMeta.color }}>
+              <p className="text-[11px] font-bold uppercase tracking-widest mb-0.5" style={{ color: cardMeta.color }}>Ответ</p>
+              <p className="font-display font-black text-lg text-black">{card.answer}</p>
+            </div>
+          )}
+
           {/* ── Подпись ── */}
-          <p className="text-center text-slate-400 text-sm font-medium shrink-0 mt-10 animate-fade-in" style={{ animationDelay: '0.25s', opacity: 0 }}>
-            Подумай и ответь!
-          </p>
+          {!flipped && (
+            <p className="text-center text-slate-400 text-sm font-medium shrink-0 mt-12 animate-fade-in" style={{ animationDelay: '0.25s', opacity: 0 }}>
+              Подумай и ответь!
+            </p>
+          )}
 
           {/* ── Кнопки ── */}
           <div className="px-5 pt-3 pb-5 shrink-0">
@@ -892,7 +907,7 @@ export default function Index() {
               </button>
               <button onClick={() => setFlipped(!flipped)}
                 className="w-14 h-14 rounded-2xl flex items-center justify-center active:scale-90 transition-transform shadow-md shrink-0"
-                style={{ background: card.color }}>
+                style={{ background: cardMeta.color }}>
                 <Icon name="RefreshCw" size={22} className="text-white" />
               </button>
               <button onClick={nextCard}
