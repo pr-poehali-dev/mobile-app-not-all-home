@@ -22,17 +22,19 @@ const STATUSES = [
   { id: 'school', label: 'В школе', icon: 'GraduationCap', color: '#C9A8DA' },
 ];
 
+/* Глеб=голубой, Мама=оранжевая, Соня=фиолетовая, Папа=красный */
 const FAMILY = [
-  { name: 'Мама', avatar: '👩', status: 'home' },
-  { name: 'Папа', avatar: '👨', status: 'work' },
-  { name: 'Соня', avatar: '👧', status: 'school' },
+  { name: 'Глеб', img: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/730da574-7b26-4e12-9a3c-64fb67a4b60b.png', status: 'home' },
+  { name: 'Мама', img: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/e6bc4399-bf4e-49e0-84c9-1a5eac07e3db.png', status: 'home' },
+  { name: 'Соня', img: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/138c1eb7-1eda-43c6-9790-173d1058ed63.png', status: 'school' },
+  { name: 'Папа', img: 'https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/7865ce3f-e2ae-4a60-b951-48f23dfe2292.png', status: 'work' },
 ];
 
 const EVENTS = [
-  { id: 0, title: 'Вечер кино', date: '22 мар', sub: 'сегодня', daysLeft: 0, color: '#4FC3E8', emoji: '🎬', participants: ['😊','😄','😋','😡'] },
-  { id: 1, title: 'День рождения папы', date: '27 мар', sub: 'через 5 дней', daysLeft: 5, color: '#F4922B', emoji: '🎂', participants: ['🤩','😮','😑','😤'] },
-  { id: 2, title: 'Пикник на природе', date: '5 апр', sub: 'через 14 дней', daysLeft: 14, color: '#E63946', emoji: '🌿', participants: ['😊','😄','😋','😡'] },
-  { id: 3, title: 'Поездка на море', date: '12 апр', sub: 'через 20 дней', daysLeft: 20, color: '#C9A8DA', emoji: '🏖️', participants: ['🤩','😮','😑','😤'] },
+  { id: 0, title: 'Вечер кино',         date: '22 мар', sub: 'сегодня',       daysLeft: 0,  color: '#4FC3E8', emoji: '🎬', participants: [0,1,2,3] },
+  { id: 1, title: 'День рождения папы', date: '27 мар', sub: 'через 5 дней',  daysLeft: 5,  color: '#F4922B', emoji: '🎂', participants: [0,1,2,3] },
+  { id: 2, title: 'Пикник на природе',  date: '5 апр',  sub: 'через 14 дней', daysLeft: 14, color: '#E63946', emoji: '🌿', participants: [0,1,2,3] },
+  { id: 3, title: 'Поездка на море',    date: '12 апр', sub: 'через 20 дней', daysLeft: 20, color: '#C9A8DA', emoji: '🏖️', participants: [0,1,2,3] },
 ];
 
 const CARDS = [
@@ -74,6 +76,13 @@ const WelcomeArt = () => (
         <path d="M150 15 l24 3 l-15 18 z" />
       </g>
     </svg>
+  </div>
+);
+
+/* ─── фирменный аватар члена семьи ──────────────────── */
+const FamilyAvatar = ({ idx, size = 44 }: { idx: number; size?: number }) => (
+  <div style={{ width: size, height: size, borderRadius: '50%', overflow: 'hidden', flexShrink: 0 }}>
+    <img src={FAMILY[idx].img} alt={FAMILY[idx].name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
   </div>
 );
 
@@ -317,10 +326,8 @@ export default function Index() {
           <div className="mb-6">
             <p className="text-sm text-slate-500 font-medium mb-3">Участники:</p>
             <div className="flex gap-2">
-              {ev.participants.map((p, i) => (
-                <div key={i} className="w-12 h-12 rounded-full flex items-center justify-center text-2xl shadow-sm border-2 border-white" style={{ background: EVENTS[i % EVENTS.length].color }}>
-                  {p}
-                </div>
+              {ev.participants.map((memberIdx, i) => (
+                <FamilyAvatar key={i} idx={memberIdx} size={48} />
               ))}
             </div>
           </div>
@@ -450,11 +457,11 @@ export default function Index() {
 
           <p className="mt-7 text-xs font-bold tracking-widest text-slate-400 uppercase">Кто где сейчас</p>
           <div className="mt-3 bg-slate-100 rounded-3xl p-4 space-y-3">
-            {FAMILY.map(f => {
+            {FAMILY.map((f, idx) => {
               const st = STATUSES.find(s => s.id === f.status)!;
               return (
                 <div key={f.name} className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-full bg-white flex items-center justify-center text-xl shadow-sm">{f.avatar}</div>
+                  <FamilyAvatar idx={idx} size={44} />
                   <span className="font-semibold text-slate-700 flex-1">{f.name}</span>
                   <span className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: st.color + '22', color: st.color }}>
                     <Icon name={st.icon} size={13} />
