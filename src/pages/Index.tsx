@@ -114,16 +114,14 @@ export default function Index() {
     return (
       <Phone>
         <div className="relative h-full flex flex-col">
-          <WelcomeArt />
-          <div className="relative z-10 flex-1 flex flex-col justify-center px-9 -mt-4">
-            <h1 className="font-display font-black text-[68px] leading-[0.9] tracking-tight text-black animate-fade-in">
-              НЕ<br />ВСЕ<br />ДОМА
-            </h1>
-            <p className="mt-5 text-slate-500 text-base leading-snug animate-fade-in" style={{ animationDelay: '0.15s', opacity: 0 }}>
-              место, где семья<br />всегда на одной волне
-            </p>
+          <div className="flex-1 overflow-hidden">
+            <img
+              src="https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/45445f0a-1d35-422f-9c4f-1e554226e97b.png"
+              alt="Не все дома"
+              className="w-full h-full object-cover object-top"
+            />
           </div>
-          <div className="relative z-10 px-7 pb-10">
+          <div className="px-7 pb-10 pt-4 bg-white">
             <button onClick={() => go('home')} className="w-full py-4 rounded-2xl bg-brand-blue text-white font-display font-bold text-lg shadow-lg active:scale-95 transition-transform">
               Привет, семья!
             </button>
@@ -153,7 +151,7 @@ export default function Index() {
           <div className="grid grid-cols-2 gap-3 mt-3">
             <Tile color="#4FC3E8" icon="Heart" title="Настроение" sub="История настроений" onClick={() => go('moodIntro')} />
             <Tile color="#C9A8DA" icon="Layers" title="Карточки" sub="Вопросы для семьи" onClick={() => go('gameIntro')} />
-            <Tile color="#F4922B" icon="Calendar" title="События" sub="Планы и мероприятия" onClick={() => go('eventsList')} />
+            <Tile color="#F4922B" icon="Calendar" title="События" sub="Планы и мероприятия" onClick={() => go('eventsIntro')} />
             <Tile color="#E63946" icon="Smile" title="Профиль" sub="Члена семьи" onClick={() => go('profile')} />
           </div>
         </div>
@@ -165,27 +163,16 @@ export default function Index() {
   if (screen === 'moodIntro')
     return (
       <Phone>
-        <div className="relative h-full flex flex-col px-7 pt-16 pb-10">
+        <div className="relative h-full flex flex-col px-7 pt-14 pb-10">
           <BackBtn onClick={() => go('home')} />
-          <h1 className="font-display font-black text-4xl leading-[0.95] text-black mt-6">Трекер<br />настроений</h1>
-          <p className="mt-3 text-slate-400 text-sm leading-snug">
-            Отмечайте настроение каждый день и следите за эмоциональной атмосферой в семье.
-          </p>
-          <div className="relative flex justify-center items-center my-8 h-52">
-            <div className="absolute w-28 h-28 rounded-full bg-brand-red flex items-center justify-center text-5xl left-4 animate-float">😡</div>
-            <div className="absolute w-28 h-28 rounded-full bg-brand-orange flex items-center justify-center text-5xl right-4 top-2 animate-float" style={{ animationDelay: '1s' }}>😄</div>
-            <div className="relative w-36 h-36 rounded-full bg-brand-blue flex items-center justify-center text-7xl shadow-xl animate-pop">😢
-              <span className="absolute -bottom-1 -right-1 w-9 h-9 rounded-full bg-brand-blue border-4 border-white flex items-center justify-center text-white">
-                <Icon name="Check" size={16} />
-              </span>
-            </div>
+          <div className="flex-1 flex flex-col">
+            <img
+              src="https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/66c71652-28a3-44f5-b518-199f3a091827.png"
+              alt="Трекер настроений"
+              className="w-full flex-1 object-contain object-center mt-2"
+            />
           </div>
-          <div className="space-y-3 flex-1">
-            <Feat color="#4FC3E8" text="Статистика по дням и неделям" />
-            <Feat color="#C9A8DA" text="Видно настроение каждого" />
-            <Feat color="#F4922B" text="Поддержка близких" />
-          </div>
-          <button onClick={() => go('moodMain')} className="w-full py-4 rounded-2xl bg-brand-orange text-white font-display font-bold text-lg shadow-lg active:scale-95 transition-transform">
+          <button onClick={() => go('moodMain')} className="w-full py-4 rounded-2xl bg-brand-orange text-white font-display font-bold text-lg shadow-lg active:scale-95 transition-transform mt-4">
             Начать отслеживать
           </button>
         </div>
@@ -244,45 +231,16 @@ export default function Index() {
   if (screen === 'eventsIntro')
     return (
       <Phone>
-        <div className="relative h-full flex flex-col px-7 pt-16 pb-10">
+        <div className="relative h-full flex flex-col px-7 pt-14 pb-10">
           <BackBtn onClick={() => go('home')} />
-          <h1 className="font-display font-black text-4xl leading-[0.95] text-black mt-6">Календарь<br />событий</h1>
-          <p className="mt-3 text-slate-400 text-sm leading-snug">
-            Планируйте семейные события и следите за тем, что ждёт впереди.
-          </p>
-
-          <div className="relative flex justify-center items-center my-8 h-52">
-            <div className="absolute left-2 top-4 w-28 h-36 rounded-3xl shadow-xl rotate-[-10deg]" style={{ background: '#4FC3E8' }}>
-              <div className="p-3 text-white">
-                <p className="text-xs font-bold opacity-70">МАР</p>
-                <p className="font-black text-3xl">22</p>
-                <p className="text-xs mt-2 leading-tight">Вечер кино</p>
-              </div>
-            </div>
-            <div className="absolute right-2 top-8 w-28 h-36 rounded-3xl shadow-xl rotate-[8deg]" style={{ background: '#F4922B' }}>
-              <div className="p-3 text-white">
-                <p className="text-xs font-bold opacity-70">МАР</p>
-                <p className="font-black text-3xl">27</p>
-                <p className="text-xs mt-2 leading-tight">День рождения</p>
-              </div>
-            </div>
-            <div className="relative w-32 h-40 rounded-3xl shadow-2xl z-10" style={{ background: '#E63946' }}>
-              <div className="p-4 text-white">
-                <p className="text-xs font-bold opacity-70">АПР</p>
-                <p className="font-black text-4xl">5</p>
-                <p className="text-xs mt-2 leading-tight">Пикник на природе</p>
-              </div>
-              <div className="absolute -bottom-2 -right-2 text-3xl">🌿</div>
-            </div>
+          <div className="flex-1 flex flex-col">
+            <img
+              src="https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/82275ec0-4782-4c94-b564-3de847da1ac6.png"
+              alt="События семьи"
+              className="w-full flex-1 object-contain object-center mt-2"
+            />
           </div>
-
-          <div className="space-y-3 flex-1">
-            <Feat color="#4FC3E8" text="Все важные даты в одном месте" />
-            <Feat color="#C9A8DA" text="Обратный отсчёт до события" />
-            <Feat color="#F4922B" text="Участники и планы семьи" />
-          </div>
-
-          <button onClick={() => go('eventsList')} className="w-full py-4 rounded-2xl font-display font-bold text-lg shadow-lg active:scale-95 transition-transform text-white" style={{ background: '#F4922B' }}>
+          <button onClick={() => go('eventsList')} className="w-full py-4 rounded-2xl font-display font-bold text-lg shadow-lg active:scale-95 transition-transform text-white mt-4" style={{ background: '#F4922B' }}>
             Открыть календарь
           </button>
         </div>
@@ -377,27 +335,16 @@ export default function Index() {
   if (screen === 'gameIntro')
     return (
       <Phone>
-        <div className="relative h-full flex flex-col px-7 pt-16 pb-10">
+        <div className="relative h-full flex flex-col px-7 pt-14 pb-10">
           <BackBtn onClick={() => go('home')} />
-          <h1 className="font-display font-black text-4xl leading-[0.95] text-black mt-6">Игра<br />«Не все дома»</h1>
-          <p className="mt-3 text-slate-400 text-sm leading-snug">
-            Игра для семьи, которая сближает, веселит и помогает узнать друг друга ещё лучше.
-          </p>
-
-          <div className="relative flex justify-center items-center my-8 h-52">
-            <GameCard rot={-18} x={-70} bg="#F4922B" />
-            <GameCard rot={-6} x={-22} bg="#E63946" label="НЕ ВСЕ ДОМА" />
-            <GameCard rot={8} x={30} bg="#4FC3E8" q />
-            <GameCard rot={20} x={78} bg="#C9A8DA" />
+          <div className="flex-1 flex flex-col">
+            <img
+              src="https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/f8763ba7-7557-4ec1-af52-be8a1cd30862.png"
+              alt="Игра Не все дома"
+              className="w-full flex-1 object-contain object-center mt-2"
+            />
           </div>
-
-          <div className="space-y-3 flex-1">
-            <Feat color="#4FC3E8" text="Более 120 обновляющихся карточек" />
-            <Feat color="#C9A8DA" text="От 11 лет" />
-            <Feat color="#F4922B" text="Смех и яркие моменты" />
-          </div>
-
-          <button onClick={() => { setCardIndex(0); go('gamePlay'); }} className="w-full py-4 rounded-2xl bg-brand-blue text-white font-display font-bold text-lg shadow-lg active:scale-95 transition-transform">
+          <button onClick={() => { setCardIndex(0); go('gamePlay'); }} className="w-full py-4 rounded-2xl bg-brand-blue text-white font-display font-bold text-lg shadow-lg active:scale-95 transition-transform mt-4">
             Собрать игроков
           </button>
         </div>
