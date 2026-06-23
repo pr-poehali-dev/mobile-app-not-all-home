@@ -289,21 +289,21 @@ export default function Index() {
   if (screen === 'home')
     return (
       <Phone>
-        <div className="px-6 pt-16 pb-32">
+        <div className="h-screen flex flex-col px-6 pt-12 pb-20">
           <p className="text-xs font-semibold tracking-widest text-slate-400 uppercase animate-fade-in">Добро пожаловать</p>
-          <h1 className="font-display font-black text-5xl leading-[0.9] text-black mt-1 animate-fade-in" style={{ animationDelay: '0.05s', opacity: 0 }}>НЕ ВСЕ<br />ДОМА</h1>
+          <h1 className="font-display font-black text-4xl leading-[0.9] text-black mt-1 animate-fade-in" style={{ animationDelay: '0.05s', opacity: 0 }}>НЕ ВСЕ<br />ДОМА</h1>
 
-          <div className="mt-6 bg-white rounded-3xl p-5 border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.06)] animate-scale-in">
+          <div className="mt-4 bg-white rounded-3xl p-4 border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.06)] animate-scale-in">
             <p className="text-xs text-slate-400">Сегодня <span className="font-semibold text-slate-500">21 марта 2026</span></p>
-            <p className="font-display font-black text-2xl text-black mt-1">Суббота!</p>
+            <p className="font-display font-black text-xl text-black mt-0.5">Суббота!</p>
             <p className="text-sm text-slate-500">Отличный день для игры с семьёй</p>
-            <button onClick={() => go('gameIntro')} className="mt-4 px-5 py-2.5 rounded-xl bg-brand-blue text-white font-semibold text-sm active:scale-95 transition-transform">
+            <button onClick={() => go('gameIntro')} className="mt-3 px-5 py-2 rounded-xl bg-brand-blue text-white font-semibold text-sm active:scale-95 transition-transform">
               Начать игру
             </button>
           </div>
 
-          <p className="mt-7 text-xs font-bold tracking-widest text-slate-400 uppercase animate-fade-in" style={{ animationDelay: '0.2s', opacity: 0 }}>Разделы</p>
-          <div className="grid grid-cols-2 gap-3 mt-3">
+          <p className="mt-5 text-xs font-bold tracking-widest text-slate-400 uppercase animate-fade-in" style={{ animationDelay: '0.2s', opacity: 0 }}>Разделы</p>
+          <div className="grid grid-cols-2 gap-3 mt-2 flex-1">
             <Tile color="#4FC3E8" icon="Heart" title="Настроение" sub="История настроений" onClick={() => go('moodIntro')} />
             <Tile color="#C9A8DA" icon="Layers" title="Карточки" sub="Вопросы для семьи" onClick={() => go('gameIntro')} />
             <Tile color="#F4922B" icon="Calendar" title="События" sub="Планы и мероприятия" onClick={() => go('eventsIntro')} />
@@ -318,25 +318,26 @@ export default function Index() {
   if (screen === 'moodIntro')
     return (
       <Phone>
-        <div className="relative min-h-screen flex flex-col px-7 pt-14 pb-10">
+        <div className="h-screen flex flex-col px-7 pt-12 pb-20">
           <BackBtn onClick={() => go('home')} />
 
-          <h1 className="font-display font-black text-[28px] leading-tight text-black mt-5 animate-fade-in">Трекер<br />настроений</h1>
-          <p className="mt-2 text-slate-400 text-sm leading-snug animate-fade-in" style={{ animationDelay: '0.1s', opacity: 0 }}>
-            Отмечайте настроение каждый день<br />и следите за эмоциональной<br />атмосферой в семье.
+          <h1 className="font-display font-black text-[26px] leading-tight text-black mt-4 animate-fade-in">Трекер<br />настроений</h1>
+          <p className="mt-1.5 text-slate-400 text-sm leading-snug animate-fade-in" style={{ animationDelay: '0.1s', opacity: 0 }}>
+            Отмечайте настроение каждый день<br />и следите за атмосферой в семье.
           </p>
 
           {/* Картинка по центру */}
-          <div className="flex-1 flex items-center justify-center py-4 animate-scale-in" style={{ animationDelay: '0.15s', opacity: 0 }}>
+          <div className="flex-1 flex items-center justify-center animate-scale-in" style={{ animationDelay: '0.15s', opacity: 0, minHeight: 0 }}>
             <img
               src="https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/1662741b-084a-407b-b57a-6709bfb9311c.png"
               alt="Настроения"
-              className="w-full max-w-[300px] object-contain"
+              className="w-full max-w-[240px] object-contain"
+              style={{ maxHeight: '28vh' }}
             />
           </div>
 
           {/* Три пункта */}
-          <div className="space-y-4 mb-8">
+          <div className="space-y-3 mb-5">
             <Feat color="#4FC3E8" text="Статистика по дням и неделям" />
             <Feat color="#C9A8DA" text="Видно настроение каждого" />
             <Feat color="#F4922B" text="Поддержка близких" />
@@ -754,25 +755,26 @@ export default function Index() {
   if (screen === 'gameIntro')
     return (
       <Phone>
-        <div className="relative min-h-screen flex flex-col px-7 pt-14 pb-10">
+        <div className="h-screen flex flex-col px-7 pt-12 pb-20">
           <BackBtn onClick={() => go('home')} />
 
-          <h1 className="font-display font-black text-[28px] leading-tight text-black mt-5 animate-fade-in">Игра<br />«Не все дома»</h1>
-          <p className="mt-2 text-slate-400 text-sm leading-snug animate-fade-in" style={{ animationDelay: '0.1s', opacity: 0 }}>
-            Игра для семьи, которая сближает,<br />веселит и помогает узнать друг друга<br />ещё лучше.
+          <h1 className="font-display font-black text-[26px] leading-tight text-black mt-4 animate-fade-in">Игра<br />«Не все дома»</h1>
+          <p className="mt-1.5 text-slate-400 text-sm leading-snug animate-fade-in" style={{ animationDelay: '0.1s', opacity: 0 }}>
+            Игра для семьи, которая сближает,<br />веселит и помогает узнать друг друга.
           </p>
 
           {/* Картинка по центру */}
-          <div className="flex-1 flex items-center justify-center py-4 animate-scale-in" style={{ animationDelay: '0.15s', opacity: 0 }}>
+          <div className="flex-1 flex items-center justify-center animate-scale-in" style={{ animationDelay: '0.15s', opacity: 0, minHeight: 0 }}>
             <img
               src="https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/16187e64-1865-4873-a59f-3722dec9aeec.png"
               alt="Карточки игры"
-              className="w-full max-w-[300px] object-contain"
+              className="w-full max-w-[260px] object-contain"
+              style={{ maxHeight: '28vh' }}
             />
           </div>
 
           {/* Три пункта */}
-          <div className="space-y-4 mb-8">
+          <div className="space-y-3 mb-5">
             <Feat color="#4FC3E8" text="Более 120 обновляющихся карточек" />
             <Feat color="#C9A8DA" text="От 11 лет" />
             <Feat color="#F4922B" text="Смех и яркие моменты" />
@@ -1165,7 +1167,7 @@ export default function Index() {
 
 /* ─── вспомогательные компоненты ────────────────────── */
 const Tile = ({ color, icon, title, sub, onClick }: { color: string; icon: string; title: string; sub: string; onClick?: () => void }) => (
-  <button onClick={onClick} className="rounded-3xl p-4 h-32 flex flex-col justify-between text-left text-white active:scale-95 transition-transform shadow-md" style={{ background: color }}>
+  <button onClick={onClick} className="rounded-3xl p-4 w-full h-full flex flex-col justify-between text-left text-white active:scale-95 transition-transform shadow-md" style={{ background: color }}>
     <Icon name={icon} size={26} />
     <div>
       <p className="font-display font-bold text-lg leading-tight">{title}</p>
