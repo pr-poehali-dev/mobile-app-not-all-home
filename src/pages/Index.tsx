@@ -337,7 +337,7 @@ export default function Index() {
           <div className="grid grid-cols-2 gap-3 mt-3">
             <Tile color="#4FC3E8" icon="Heart" title="Настроение" sub="История настроений" onClick={() => go('moodIntro')} />
             <Tile color="#C9A8DA" icon="Layers" title="Карточки" sub="Вопросы для семьи" onClick={() => go('gameIntro')} />
-            <Tile color="#F4922B" icon="Calendar" title="События" sub="Планы и мероприятия" onClick={() => go('eventsIntro')} />
+            <Tile color="#F4922B" icon="Calendar" title="События" sub="Планы и события" onClick={() => go('eventsIntro')} />
             <Tile color="#E63946" icon="Smile" title="Профиль" sub="Члена семьи" onClick={() => go('profile')} />
           </div>
         </div>
