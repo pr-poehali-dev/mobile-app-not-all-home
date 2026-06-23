@@ -275,7 +275,7 @@ export default function Index() {
             <img
               src="https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/45445f0a-1d35-422f-9c4f-1e554226e97b.png"
               alt="Не все дома"
-              className="w-full h-full object-cover object-top"
+              className="w-full h-full object-contain py-0 px-[3px] my-0 mx-[3px]"
             />
           </div>
           <div className="px-7 pb-10 pt-4 bg-white animate-fade-in" style={{ animationDelay: '0.25s', opacity: 0 }}>
