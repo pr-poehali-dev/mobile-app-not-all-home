@@ -1121,8 +1121,8 @@ export default function Index() {
 
         {/* ── Всплывашка редактора аватара ── */}
         {avatarStep !== null && (
-          <div className="fixed inset-0 bg-black/40 z-40 flex items-end" onClick={() => setAvatarStep(null)}>
-            <div className="w-full bg-white rounded-t-3xl p-5 pb-8 animate-fade-in" onClick={e => e.stopPropagation()}>
+          <div className="fixed inset-0 bg-black/40 z-40 flex items-end" style={{ paddingBottom: '4.5rem' }} onClick={() => setAvatarStep(null)}>
+            <div className="w-full bg-white rounded-t-3xl p-5 pb-8 animate-fade-in overflow-y-auto" style={{ maxHeight: '70vh' }} onClick={e => e.stopPropagation()}>
               {/* Превью + закрыть */}
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
