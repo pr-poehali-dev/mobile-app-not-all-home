@@ -825,7 +825,7 @@ export default function Index() {
           {/* Три пункта */}
           <div className="space-y-4 mb-8">
             <Feat color="#4FC3E8" text="Более 120 обновляющихся карточек" />
-            <Feat color="#C9A8DA" text="От 11 лет" />
+            <Feat color="#C9A8DA" text="Для всей семьи" />
             <Feat color="#F4922B" text="Смех и яркие моменты" />
           </div>
 
