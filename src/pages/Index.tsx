@@ -458,8 +458,8 @@ export default function Index() {
         </div>
         {/* ── Всплывашка настроений семьи ── */}
         {showFamilyMoods && (
-          <div className="fixed inset-0 bg-black/40 z-40 flex items-end" onClick={() => setShowFamilyMoods(false)}>
-            <div className="w-full bg-white rounded-t-3xl px-6 pt-5 pb-10 animate-fade-in overflow-y-auto" style={{ maxHeight: '80vh' }} onClick={e => e.stopPropagation()}>
+          <div className="fixed inset-0 bg-black/40 z-40 flex items-end" style={{ paddingBottom: '4.5rem' }} onClick={() => setShowFamilyMoods(false)}>
+            <div className="w-full bg-white rounded-t-3xl px-6 pt-5 animate-fade-in overflow-y-auto" style={{ maxHeight: '70vh', paddingBottom: 'max(2.5rem, env(safe-area-inset-bottom))' }} onClick={e => e.stopPropagation()}>
               <div className="flex items-center justify-between mb-5">
                 <div>
                   <p className="font-display font-black text-xl text-black">Настроение семьи</p>
