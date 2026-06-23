@@ -966,9 +966,9 @@ export default function Index() {
                 <Icon name="Pencil" size={11} className="text-slate-500" />
               </div>
             </button>
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               {editingName ? (
-                <div className="flex gap-2 items-center w-full">
+                <div className="flex gap-2 items-center min-w-0">
                   <input
                     autoFocus
                     value={nameInput}
