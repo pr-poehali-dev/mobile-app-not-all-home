@@ -32,10 +32,10 @@ const FAMILY = [
 ];
 
 const EVENTS = [
-  { id: 0, title: 'Вечер кино',         date: '25 июн', sub: 'сегодня',       daysLeft: 0,  color: '#4FC3E8', emoji: '🎬', participants: [0,1,2,3] },
-  { id: 1, title: 'День рождения папы', date: '30 июн', sub: 'через 5 дней',  daysLeft: 5,  color: '#F4922B', emoji: '🎂', participants: [0,1,2,3] },
-  { id: 2, title: 'Пикник на природе',  date: '9 июл',  sub: 'через 14 дней', daysLeft: 14, color: '#E63946', emoji: '🌿', participants: [0,1,2,3] },
-  { id: 3, title: 'Поездка на море',    date: '15 июл', sub: 'через 20 дней', daysLeft: 20, color: '#C9A8DA', emoji: '🏖️', participants: [0,1,2,3] },
+  { id: 0, title: 'Вечер кино',         date: '25 июн', dateIso: '2026-06-25', sub: 'сегодня',       daysLeft: 0,  color: '#4FC3E8', emoji: '🎬', participants: [0,1,2,3] },
+  { id: 1, title: 'День рождения папы', date: '30 июн', dateIso: '2026-06-30', sub: 'через 5 дней',  daysLeft: 5,  color: '#F4922B', emoji: '🎂', participants: [0,1,2,3] },
+  { id: 2, title: 'Пикник на природе',  date: '9 июл',  dateIso: '2026-07-09', sub: 'через 14 дней', daysLeft: 14, color: '#E63946', emoji: '🌿', participants: [0,1,2,3] },
+  { id: 3, title: 'Поездка на море',    date: '15 июл', dateIso: '2026-07-15', sub: 'через 20 дней', daysLeft: 20, color: '#C9A8DA', emoji: '🏖️', participants: [0,1,2,3] },
 ];
 
 /* type → label/color. illustration уникальна для каждой карточки */
@@ -188,17 +188,41 @@ export default function Index() {
   const [formColor, setFormColor] = useState(0);
 
   const [formParticipants, setFormParticipants] = useState<number[]>([0,1,2,3]);
+  const [formDateRaw, setFormDateRaw] = useState(''); // ISO: "2026-06-30"
+
+  const TODAY_FIXED = new Date(2026, 5, 25); // 25 июня 2026
+  const TODAY_ISO = '2026-06-25';
+
+  const formatEventDate = (iso: string) => {
+    if (!iso) return 'скоро';
+    const [, m, d] = iso.split('-');
+    const MONTHS_SHORT = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+    return `${parseInt(d)} ${MONTHS_SHORT[parseInt(m) - 1]}`;
+  };
+
+  const calcDaysLeft = (iso: string) => {
+    if (!iso) return 0;
+    const target = new Date(iso);
+    const diff = Math.round((target.getTime() - TODAY_FIXED.getTime()) / 86400000);
+    return Math.max(0, diff);
+  };
+
+  const calcSub = (days: number) => {
+    if (days === 0) return 'сегодня';
+    if (days === 1) return 'завтра';
+    return `через ${days} ${days < 5 ? 'дня' : 'дней'}`;
+  };
 
   const toggleParticipant = (idx: number) =>
     setFormParticipants(prev => prev.includes(idx) ? prev.filter(i => i !== idx) : [...prev, idx]);
 
   const openNewEvent = () => {
-    setFormTitle(''); setFormDate(''); setFormColor(0); setFormParticipants([0,1,2,3]);
+    setFormTitle(''); setFormDateRaw(''); setFormColor(0); setFormParticipants([0,1,2,3]);
     setEditingEventIdx(null); setShowEventForm(true);
   };
   const openEditEvent = (idx: number) => {
     const ev = events[idx];
-    setFormTitle(ev.title); setFormDate(ev.date);
+    setFormTitle(ev.title); setFormDateRaw(ev.dateIso ?? '');
     setFormColor(EVENT_COLORS.indexOf(ev.color) >= 0 ? EVENT_COLORS.indexOf(ev.color) : 0);
     setFormParticipants([...ev.participants]);
     setEditingEventIdx(idx); setShowEventForm(true);
@@ -206,10 +230,15 @@ export default function Index() {
   const saveEvent = () => {
     if (!formTitle.trim()) return;
     const color = EVENT_COLORS[formColor] ?? '#4FC3E8';
+    const daysLeft = calcDaysLeft(formDateRaw);
+    const dateLabel = formatEventDate(formDateRaw);
+    const sub = formDateRaw ? calcSub(daysLeft) : '';
     if (editingEventIdx !== null) {
-      setEvents(prev => prev.map((e,i) => i === editingEventIdx ? { ...e, title: formTitle, date: formDate || e.date, color, participants: formParticipants } : e));
+      setEvents(prev => prev.map((e,i) => i === editingEventIdx
+        ? { ...e, title: formTitle, date: dateLabel, dateIso: formDateRaw, sub, daysLeft, color, participants: formParticipants }
+        : e));
     } else {
-      setEvents(prev => [...prev, { id: prev.length, title: formTitle, date: formDate || 'скоро', sub: '', daysLeft: 0, color, emoji: '🎉', participants: formParticipants }]);
+      setEvents(prev => [...prev, { id: prev.length, title: formTitle, date: dateLabel, dateIso: formDateRaw, sub, daysLeft, color, emoji: '🎉', participants: formParticipants }]);
     }
     setShowEventForm(false);
   };
@@ -645,7 +674,7 @@ export default function Index() {
                 className="w-full border-2 border-slate-200 rounded-2xl px-4 py-3 font-body text-base text-black outline-none focus:border-brand-blue mb-3" maxLength={40} />
 
               <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Дата</p>
-              <input value={formDate} onChange={e => setFormDate(e.target.value)} placeholder="Например: 15 мая"
+              <input type="date" value={formDateRaw} min={TODAY_ISO} onChange={e => setFormDateRaw(e.target.value)}
                 className="w-full border-2 border-slate-200 rounded-2xl px-4 py-3 font-body text-base text-black outline-none focus:border-brand-blue mb-3" />
 
               <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2">Цвет</p>
