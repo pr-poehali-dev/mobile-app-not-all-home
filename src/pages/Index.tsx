@@ -968,13 +968,13 @@ export default function Index() {
             </button>
             <div className="flex-1">
               {editingName ? (
-                <div className="flex gap-2 items-center">
+                <div className="flex gap-2 items-center w-full">
                   <input
                     autoFocus
                     value={nameInput}
                     onChange={e => setNameInput(e.target.value)}
                     onKeyDown={e => { if (e.key === 'Enter') { setMyName(nameInput.trim() || myName); setEditingName(false); } }}
-                    className="flex-1 border-2 border-brand-blue rounded-xl px-3 py-2 font-display font-bold text-xl text-black outline-none"
+                    className="flex-1 min-w-0 border-2 border-brand-blue rounded-xl px-3 py-2 font-display font-bold text-base text-black outline-none"
                     maxLength={14}
                   />
                   <button onClick={() => { setMyName(nameInput.trim() || myName); setEditingName(false); }}
