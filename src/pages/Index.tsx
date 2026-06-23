@@ -111,13 +111,10 @@ const CompositeAvatar = ({ faceIdx, colorIdx, size = 48 }: { faceIdx: number; co
   </div>
 );
 
-/* ─── обёртка телефона ───────────────────────────────── */
+/* ─── обёртка: полный экран, как PWA ────────────────── */
 const Phone = ({ children }: { children: React.ReactNode }) => (
-  <div className="min-h-screen w-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center p-4 font-body">
-    <div className="relative w-full max-w-[380px] h-[780px] bg-white rounded-[44px] shadow-2xl overflow-hidden border-[6px] border-black/90">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-black/90 rounded-b-2xl z-50" />
-      <div className="w-full h-full overflow-y-auto">{children}</div>
-    </div>
+  <div className="w-full min-h-screen bg-white font-body overflow-y-auto">
+    {children}
   </div>
 );
 
@@ -271,8 +268,8 @@ export default function Index() {
   if (screen === 'welcome')
     return (
       <Phone>
-        <div className="relative h-full flex flex-col">
-          <div className="flex-1 overflow-hidden animate-scale-in">
+        <div className="relative min-h-screen flex flex-col">
+          <div className="flex-1 overflow-hidden animate-scale-in" style={{ minHeight: '70vh' }}>
             <img
               src="https://cdn.poehali.dev/projects/e26efa0e-ff06-4c5c-aeb7-cd3c5b6a21c0/bucket/45445f0a-1d35-422f-9c4f-1e554226e97b.png"
               alt="Не все дома"
@@ -292,7 +289,7 @@ export default function Index() {
   if (screen === 'home')
     return (
       <Phone>
-        <div className="px-6 pt-16 pb-28">
+        <div className="px-6 pt-16 pb-32">
           <p className="text-xs font-semibold tracking-widest text-slate-400 uppercase animate-fade-in">Добро пожаловать</p>
           <h1 className="font-display font-black text-5xl leading-[0.9] text-black mt-1 animate-fade-in" style={{ animationDelay: '0.05s', opacity: 0 }}>НЕ ВСЕ<br />ДОМА</h1>
 
@@ -321,7 +318,7 @@ export default function Index() {
   if (screen === 'moodIntro')
     return (
       <Phone>
-        <div className="relative h-full flex flex-col px-7 pt-14 pb-10">
+        <div className="relative min-h-screen flex flex-col px-7 pt-14 pb-10">
           <BackBtn onClick={() => go('home')} />
 
           <h1 className="font-display font-black text-[28px] leading-tight text-black mt-5 animate-fade-in">Трекер<br />настроений</h1>
@@ -356,7 +353,7 @@ export default function Index() {
   if (screen === 'moodMain') {
     return (
       <Phone>
-        <div className="px-5 pt-16 pb-28">
+        <div className="px-5 pt-16 pb-32">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-xs font-semibold tracking-widest text-slate-400 uppercase animate-fade-in">Семья</p>
@@ -461,7 +458,7 @@ export default function Index() {
         </div>
         {/* ── Всплывашка настроений семьи ── */}
         {showFamilyMoods && (
-          <div className="absolute inset-0 bg-black/40 z-40 flex items-end" onClick={() => setShowFamilyMoods(false)}>
+          <div className="fixed inset-0 bg-black/40 z-40 flex items-end" onClick={() => setShowFamilyMoods(false)}>
             <div className="w-full bg-white rounded-t-3xl px-6 pt-5 pb-10 animate-fade-in" onClick={e => e.stopPropagation()}>
               <div className="flex items-center justify-between mb-5">
                 <div>
@@ -531,7 +528,7 @@ export default function Index() {
     const nextEvent = EVENTS[1]; // ближайшее событие — День рождения папы
     return (
       <Phone>
-        <div className="relative h-full flex flex-col px-7 pt-14 pb-10">
+        <div className="relative min-h-screen flex flex-col px-7 pt-14 pb-10">
           <BackBtn onClick={() => go('home')} />
 
           {/* Заголовок — ближайшее событие */}
@@ -576,7 +573,7 @@ export default function Index() {
   if (screen === 'eventsList')
     return (
       <Phone>
-        <div className="px-5 pt-16 pb-28 overflow-y-auto">
+        <div className="px-5 pt-16 pb-32">
           {/* Шапка */}
           <div className="flex items-start justify-between mb-6">
             <div>
@@ -626,7 +623,7 @@ export default function Index() {
 
         {/* ── Всплывашка создания/редактирования ── */}
         {showEventForm && (
-          <div className="absolute inset-0 bg-black/40 z-40 flex items-end" onClick={() => setShowEventForm(false)}>
+          <div className="fixed inset-0 bg-black/40 z-40 flex items-end" onClick={() => setShowEventForm(false)}>
             <div className="w-full bg-white rounded-t-3xl px-6 pt-5 pb-10 animate-fade-in overflow-y-auto max-h-[90%]" onClick={e => e.stopPropagation()}>
               <div className="flex items-center justify-between mb-4">
                 <p className="font-display font-black text-xl text-black">
@@ -695,7 +692,7 @@ export default function Index() {
     const ev = events[selectedEvent] ?? events[0];
     return (
       <Phone>
-        <div className="relative h-full flex flex-col px-7 pt-16 pb-10">
+        <div className="relative min-h-screen flex flex-col px-7 pt-16 pb-10">
           <div className="flex items-center justify-between">
             <BackBtn onClick={() => go('eventsList')} />
             <button onClick={() => openEditEvent(selectedEvent)} className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center active:scale-90 transition-transform">
@@ -757,7 +754,7 @@ export default function Index() {
   if (screen === 'gameIntro')
     return (
       <Phone>
-        <div className="relative h-full flex flex-col px-7 pt-14 pb-10">
+        <div className="relative min-h-screen flex flex-col px-7 pt-14 pb-10">
           <BackBtn onClick={() => go('home')} />
 
           <h1 className="font-display font-black text-[28px] leading-tight text-black mt-5 animate-fade-in">Игра<br />«Не все дома»</h1>
@@ -808,7 +805,7 @@ export default function Index() {
 
     return (
       <Phone>
-        <div className="flex flex-col h-full bg-white overflow-hidden">
+        <div className="flex flex-col min-h-screen bg-white">
 
           {/* ── Шапка: счётчик + прогресс ── */}
           <div className="px-5 pt-14 pb-2 shrink-0">
@@ -931,7 +928,7 @@ export default function Index() {
           )}
 
           {/* ── Кнопки ── */}
-          <div className="px-5 pt-3 pb-5 shrink-0">
+          <div className="px-5 pt-3 pb-28 shrink-0">
             <div className="flex gap-2 items-center">
               <button onClick={prevCard}
                 className="flex-1 py-4 rounded-2xl bg-slate-100 text-slate-700 font-display font-bold text-base active:scale-95 transition-transform">
@@ -955,7 +952,7 @@ export default function Index() {
   if (screen === 'profile')
     return (
       <Phone>
-        <div className="px-6 pt-14 pb-28 overflow-y-auto">
+        <div className="px-6 pt-14 pb-32">
           <BackBtn onClick={() => go('home')} />
           <h1 className="font-display font-black text-3xl leading-tight text-black mt-4 animate-fade-in">Мой профиль</h1>
 
@@ -1060,7 +1057,7 @@ export default function Index() {
 
         {/* ── Всплывашка приглашения ── */}
         {showInvite && (
-          <div className="absolute inset-0 bg-black/40 z-40 flex items-end" onClick={() => setShowInvite(false)}>
+          <div className="fixed inset-0 bg-black/40 z-40 flex items-end" onClick={() => setShowInvite(false)}>
             <div className="w-full bg-white rounded-t-3xl p-6 pb-10 animate-fade-in" onClick={e => e.stopPropagation()}>
               <div className="flex items-center justify-between mb-5">
                 <div>
@@ -1102,7 +1099,7 @@ export default function Index() {
 
         {/* ── Всплывашка редактора аватара ── */}
         {avatarStep !== null && (
-          <div className="absolute inset-0 bg-black/40 z-40 flex items-end" onClick={() => setAvatarStep(null)}>
+          <div className="fixed inset-0 bg-black/40 z-40 flex items-end" onClick={() => setAvatarStep(null)}>
             <div className="w-full bg-white rounded-t-3xl p-5 pb-8 animate-fade-in" onClick={e => e.stopPropagation()}>
               {/* Превью + закрыть */}
               <div className="flex items-center justify-between mb-4">
@@ -1206,7 +1203,7 @@ const BottomNav = ({ active, onNav }: { active: string; onNav: (s: Screen) => vo
     { id: 'profile', label: 'Профиль',    icon: 'Smile',     screen: 'profile' as Screen },
   ];
   return (
-    <div className="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t border-slate-100 px-2 pt-2 pb-4 flex justify-around">
+    <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t border-slate-100 px-2 pt-2 pb-6 flex justify-around z-50" style={{ paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom))' }}>
       {items.map(it => {
         const on = active === it.id;
         return (
