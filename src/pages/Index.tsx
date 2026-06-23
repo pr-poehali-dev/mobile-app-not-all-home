@@ -554,8 +554,12 @@ export default function Index() {
             <p className="text-sm text-slate-500 font-medium mb-3">Участники:</p>
             <div className="flex gap-2">
               {[0,1,2,3].map((idx, i) => (
-                <div key={idx} className="animate-pop" style={{ animationDelay: `${0.35 + i * 0.07}s`, opacity: 0 }}>
-                  <FamilyAvatar idx={idx} size={48} />
+                <div key={idx} className="flex flex-col items-center gap-1 animate-pop" style={{ animationDelay: `${0.35 + i * 0.07}s`, opacity: 0 }}>
+                  {idx === 0
+                    ? <CompositeAvatar faceIdx={myFaceIdx} colorIdx={myColorIdx} size={48} />
+                    : <FamilyAvatar idx={idx} size={48} />
+                  }
+                  <span className="text-[10px] text-slate-400 font-medium">{idx === 0 ? myName : FAMILY[idx].name}</span>
                 </div>
               ))}
             </div>
@@ -658,7 +662,10 @@ export default function Index() {
                     <button key={f.name} onClick={() => toggleParticipant(i)}
                       className="relative active:scale-90 transition-all"
                       style={{ opacity: selected ? 1 : 0.35 }}>
-                      <FamilyAvatar idx={i} size={44} />
+                      {i === 0
+                        ? <CompositeAvatar faceIdx={myFaceIdx} colorIdx={myColorIdx} size={44} />
+                        : <FamilyAvatar idx={i} size={44} />
+                      }
                       {selected && (
                         <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-brand-blue border-2 border-white flex items-center justify-center">
                           <Icon name="Check" size={10} className="text-white" />
@@ -735,15 +742,19 @@ export default function Index() {
             <p className="text-sm text-slate-500 font-medium mb-3">Участники:</p>
             <div className="flex gap-2">
               {ev.participants.map((memberIdx, i) => (
-                <div key={i} className="animate-pop" style={{ animationDelay: `${0.35 + i * 0.06}s`, opacity: 0 }}>
-                  <FamilyAvatar idx={memberIdx} size={48} />
+                <div key={i} className="flex flex-col items-center gap-1 animate-pop" style={{ animationDelay: `${0.35 + i * 0.06}s`, opacity: 0 }}>
+                  {memberIdx === 0
+                    ? <CompositeAvatar faceIdx={myFaceIdx} colorIdx={myColorIdx} size={48} />
+                    : <FamilyAvatar idx={memberIdx} size={48} />
+                  }
+                  <span className="text-[10px] text-slate-400 font-medium">{memberIdx === 0 ? myName : FAMILY[memberIdx].name}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          <button className="w-full py-4 rounded-2xl text-white font-display font-bold text-lg shadow-lg active:scale-95 transition-transform animate-fade-in" style={{ background: ev.color, animationDelay: '0.55s', opacity: 0 }}>
-            Спланировать
+          <button onClick={() => openEditEvent(selectedEvent)} className="w-full py-4 rounded-2xl text-white font-display font-bold text-lg shadow-lg active:scale-95 transition-transform animate-fade-in" style={{ background: ev.color, animationDelay: '0.55s', opacity: 0 }}>
+            Спланировать / редактировать
           </button>
         </div>
       </Phone>
