@@ -226,6 +226,8 @@ export default function Index() {
   const [nameInput, setNameInput] = useState('Глеб');
   const [avatarStep, setAvatarStep] = useState<'face' | 'color' | null>(null);
   const [showInvite, setShowInvite] = useState(false);
+  const [reminderSent, setReminderSent] = useState(false);
+  const sendReminder = () => { setReminderSent(true); setTimeout(() => setReminderSent(false), 3000); };
   const INVITE_CODE = 'NVD-2026-СЕМЬЯ';
   const [showFamilyMoods, setShowFamilyMoods] = useState(false);
 
@@ -753,9 +755,18 @@ export default function Index() {
             </div>
           </div>
 
-          <button onClick={() => openEditEvent(selectedEvent)} className="w-full py-4 rounded-2xl text-white font-display font-bold text-lg shadow-lg active:scale-95 transition-transform animate-fade-in" style={{ background: ev.color, animationDelay: '0.55s', opacity: 0 }}>
-            Спланировать / редактировать
+          <button onClick={sendReminder} className="w-full py-4 rounded-2xl text-white font-display font-bold text-lg shadow-lg active:scale-95 transition-transform animate-fade-in flex items-center justify-center gap-2" style={{ background: ev.color, animationDelay: '0.55s', opacity: 0 }}>
+            <Icon name="Bell" size={20} />
+            Напомнить семье
           </button>
+
+          {/* Тост */}
+          {reminderSent && (
+            <div className="fixed bottom-24 left-4 right-4 bg-slate-900 text-white rounded-2xl px-5 py-3.5 flex items-center gap-3 z-50 animate-fade-in shadow-xl">
+              <Icon name="CheckCircle" size={20} className="text-green-400 shrink-0" />
+              <span className="text-sm font-semibold">Напоминание отправлено семье!</span>
+            </div>
+          )}
         </div>
       </Phone>
     );
