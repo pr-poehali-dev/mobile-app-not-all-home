@@ -304,10 +304,10 @@ export default function Index() {
 
           <p className="mt-7 text-xs font-bold tracking-widest text-slate-400 uppercase animate-fade-in" style={{ animationDelay: '0.2s', opacity: 0 }}>Разделы</p>
           <div className="grid grid-cols-2 gap-3 mt-3">
-            <div className="animate-pop" style={{ animationDelay: '0.25s', opacity: 0 }}><Tile color="#4FC3E8" icon="Heart" title="Настроение" sub="История настроений" onClick={() => go('moodIntro')} /></div>
-            <div className="animate-pop" style={{ animationDelay: '0.32s', opacity: 0 }}><Tile color="#C9A8DA" icon="Layers" title="Карточки" sub="Вопросы для семьи" onClick={() => go('gameIntro')} /></div>
-            <div className="animate-pop" style={{ animationDelay: '0.39s', opacity: 0 }}><Tile color="#F4922B" icon="Calendar" title="События" sub="Планы и мероприятия" onClick={() => go('eventsIntro')} /></div>
-            <div className="animate-pop" style={{ animationDelay: '0.46s', opacity: 0 }}><Tile color="#E63946" icon="Smile" title="Профиль" sub="Члена семьи" onClick={() => go('profile')} /></div>
+            <Tile color="#4FC3E8" icon="Heart" title="Настроение" sub="История настроений" onClick={() => go('moodIntro')} />
+            <Tile color="#C9A8DA" icon="Layers" title="Карточки" sub="Вопросы для семьи" onClick={() => go('gameIntro')} />
+            <Tile color="#F4922B" icon="Calendar" title="События" sub="Планы и мероприятия" onClick={() => go('eventsIntro')} />
+            <Tile color="#E63946" icon="Smile" title="Профиль" sub="Члена семьи" onClick={() => go('profile')} />
           </div>
         </div>
         <BottomNav active="home" onNav={go} />
@@ -459,7 +459,7 @@ export default function Index() {
         {/* ── Всплывашка настроений семьи ── */}
         {showFamilyMoods && (
           <div className="fixed inset-0 bg-black/40 z-40 flex items-end" onClick={() => setShowFamilyMoods(false)}>
-            <div className="w-full bg-white rounded-t-3xl px-6 pt-5 pb-10 animate-fade-in" onClick={e => e.stopPropagation()}>
+            <div className="w-full bg-white rounded-t-3xl px-6 pt-5 pb-10 animate-fade-in overflow-y-auto" style={{ maxHeight: '80vh' }} onClick={e => e.stopPropagation()}>
               <div className="flex items-center justify-between mb-5">
                 <div>
                   <p className="font-display font-black text-xl text-black">Настроение семьи</p>
