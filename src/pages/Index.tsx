@@ -32,10 +32,10 @@ const FAMILY = [
 ];
 
 const EVENTS = [
-  { id: 0, title: 'Вечер кино',         date: '22 мар', sub: 'сегодня',       daysLeft: 0,  color: '#4FC3E8', emoji: '🎬', participants: [0,1,2,3] },
-  { id: 1, title: 'День рождения папы', date: '27 мар', sub: 'через 5 дней',  daysLeft: 5,  color: '#F4922B', emoji: '🎂', participants: [0,1,2,3] },
-  { id: 2, title: 'Пикник на природе',  date: '5 апр',  sub: 'через 14 дней', daysLeft: 14, color: '#E63946', emoji: '🌿', participants: [0,1,2,3] },
-  { id: 3, title: 'Поездка на море',    date: '12 апр', sub: 'через 20 дней', daysLeft: 20, color: '#C9A8DA', emoji: '🏖️', participants: [0,1,2,3] },
+  { id: 0, title: 'Вечер кино',         date: '25 июн', sub: 'сегодня',       daysLeft: 0,  color: '#4FC3E8', emoji: '🎬', participants: [0,1,2,3] },
+  { id: 1, title: 'День рождения папы', date: '30 июн', sub: 'через 5 дней',  daysLeft: 5,  color: '#F4922B', emoji: '🎂', participants: [0,1,2,3] },
+  { id: 2, title: 'Пикник на природе',  date: '9 июл',  sub: 'через 14 дней', daysLeft: 14, color: '#E63946', emoji: '🌿', participants: [0,1,2,3] },
+  { id: 3, title: 'Поездка на море',    date: '15 июл', sub: 'через 20 дней', daysLeft: 20, color: '#C9A8DA', emoji: '🏖️', participants: [0,1,2,3] },
 ];
 
 /* type → label/color. illustration уникальна для каждой карточки */
@@ -239,13 +239,13 @@ export default function Index() {
   ];
 
   // Календарь настроений
-  const [calMonth, setCalMonth] = useState(1); // 0=январь … 11=декабрь (начинаем с февраля=1)
+  const [calMonth, setCalMonth] = useState(5); // 0=январь … 11=декабрь (начинаем с июня=5)
   const [calYear, setCalYear] = useState(2026);
   // dayMoods: ключ "год-месяц-день" → индекс MOODS
   const [dayMoods, setDayMoods] = useState<Record<string, number>>(() => {
-    // заполним февраль демо-данными
+    // заполним июнь демо-данными (до 25го)
     const init: Record<string, number> = {};
-    for (let d = 1; d <= 28; d++) init[`2026-1-${d}`] = d % 4;
+    for (let d = 1; d <= 25; d++) init[`2026-5-${d}`] = d % 4;
     return init;
   });
   const [pickingDay, setPickingDay] = useState<number | null>(null); // день, для которого выбираем настроение
@@ -263,7 +263,7 @@ export default function Index() {
     setDayMoods(prev => ({ ...prev, [moodKey(d)]: mIdx }));
     setPickingDay(null);
   };
-  const today = new Date();
+  const today = new Date(2026, 5, 25); // зафиксировано: 25 июня 2026
   const isToday = (d: number) => today.getFullYear() === calYear && today.getMonth() === calMonth && today.getDate() === d;
 
   /* ── WELCOME ── */
@@ -296,8 +296,8 @@ export default function Index() {
           <h1 className="font-display font-black text-5xl leading-[0.9] text-black mt-1 animate-fade-in" style={{ animationDelay: '0.05s', opacity: 0 }}>НЕ ВСЕ<br />ДОМА</h1>
 
           <div className="mt-6 bg-white rounded-3xl p-5 border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.06)] animate-scale-in">
-            <p className="text-xs text-slate-400">Сегодня <span className="font-semibold text-slate-500">21 марта 2026</span></p>
-            <p className="font-display font-black text-2xl text-black mt-1">Суббота!</p>
+            <p className="text-xs text-slate-400">Сегодня <span className="font-semibold text-slate-500">25 июня 2026</span></p>
+            <p className="font-display font-black text-2xl text-black mt-1">Среда!</p>
             <p className="text-sm text-slate-500">Отличный день для игры с семьёй</p>
             <button onClick={() => go('gameIntro')} className="mt-4 px-5 py-2.5 rounded-xl bg-brand-blue text-white font-semibold text-sm active:scale-95 transition-transform">
               Начать игру
