@@ -326,7 +326,7 @@ export default function Index() {
 
           <div className="mt-6 bg-white rounded-3xl p-5 border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.06)] animate-scale-in">
             <p className="text-xs text-slate-400">Сегодня <span className="font-semibold text-slate-500">25 июня 2026</span></p>
-            <p className="font-display font-black text-2xl text-black mt-1">Среда!</p>
+            <p className="font-display font-black text-2xl text-black mt-1">Четверг!</p>
             <p className="text-sm text-slate-500">Отличный день для игры с семьёй</p>
             <button onClick={() => go('gameIntro')} className="mt-4 px-5 py-2.5 rounded-xl bg-brand-blue text-white font-semibold text-sm active:scale-95 transition-transform">
               Начать игру
